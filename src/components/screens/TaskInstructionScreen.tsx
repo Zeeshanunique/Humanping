@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { ArrowLeft, ListChecks } from 'lucide-react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TaskInstructionScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { currentMission } = useApp();
 
   const instructions = [
@@ -16,62 +17,200 @@ export default function TaskInstructionScreen() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col">
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 pb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-            <ListChecks className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-gray-900">Instructions</h1>
-            <p className="text-gray-500 text-sm">Follow these steps</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 px-6 pb-6">
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 mb-6">
-          <h3 className="text-gray-900 mb-2">{currentMission?.title}</h3>
-          <p className="text-gray-600 text-sm">{currentMission?.description}</p>
-        </div>
-
-        <div className="space-y-3 mb-6">
-          {instructions.map((instruction, index) => (
-            <div
-              key={index}
-              className="flex gap-4 p-4 bg-white border border-gray-200 rounded-xl"
+          <View style={styles.headerContent}>
+            <LinearGradient
+              colors={['#3b82f6', '#9333ea']}
+              style={styles.iconContainer}
             >
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-blue-600">
-                {index + 1}
-              </div>
-              <p className="text-gray-700 flex-1">{instruction}</p>
-            </div>
-          ))}
-        </div>
+              <Ionicons name="list" size={24} color="#ffffff" />
+            </LinearGradient>
+            <View>
+              <Text style={styles.title}>Instructions</Text>
+              <Text style={styles.subtitle}>Follow these steps</Text>
+            </View>
+          </View>
+        </LinearGradient>
 
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-          <p className="text-green-800 text-sm">
-            <span className="text-lg mr-2">✨</span>
-            Remember: Growth happens outside your comfort zone. You've got this!
-          </p>
-        </div>
-      </div>
+        <View style={styles.content}>
+          <View style={styles.missionCard}>
+            <Text style={styles.missionTitle}>{currentMission?.title}</Text>
+            <Text style={styles.missionDescription}>{currentMission?.description}</Text>
+          </View>
 
-      <div className="px-6 pb-6">
-        <Button
-          onClick={() => navigate('/user-feeling')}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
+          <View style={styles.instructionsList}>
+            {instructions.map((instruction, index) => (
+              <View key={index} style={styles.instructionItem}>
+                <View style={styles.stepNumber}>
+                  <Text style={styles.stepNumberText}>{index + 1}</Text>
+                </View>
+                <Text style={styles.instructionText}>{instruction}</Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.encouragementCard}>
+            <Text style={styles.encouragementEmoji}>✨</Text>
+            <Text style={styles.encouragementText}>
+              Remember: Growth happens outside your comfort zone. You've got this!
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={styles.readyButton}
+          onPress={() => navigation.navigate('UserFeeling')}
         >
-          I'm Ready
-        </Button>
-      </div>
-    </div>
+          <Text style={styles.readyButtonText}>I'm Ready</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  missionCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
+  },
+  missionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  missionDescription: {
+    fontSize: 14,
+    color: '#374151',
+  },
+  instructionsList: {
+    gap: 12,
+    marginBottom: 24,
+  },
+  instructionItem: {
+    flexDirection: 'row',
+    gap: 16,
+    padding: 16,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+  },
+  stepNumber: {
+    width: 32,
+    height: 32,
+    backgroundColor: '#dbeafe',
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepNumberText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2563eb',
+  },
+  instructionText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#374151',
+  },
+  encouragementCard: {
+    backgroundColor: '#dcfce7',
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  encouragementEmoji: {
+    fontSize: 18,
+  },
+  encouragementText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#166534',
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    paddingTop: 16,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+  readyButton: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  readyButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

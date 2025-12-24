@@ -1,93 +1,196 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { ArrowLeft, Mail, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ForgotPasswordScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     if (!email) {
-      toast.error('Please enter your email');
+      Alert.alert('Error', 'Please enter your email');
       return;
     }
     setSent(true);
-    toast.success('Password reset link sent!');
+    Alert.alert('Success', 'Password reset link sent!');
   };
 
   if (sent) {
     return (
-      <div className="h-screen w-full bg-white flex flex-col items-center justify-center px-8">
-        <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
-          <CheckCircle2 className="w-10 h-10 text-green-600" />
-        </div>
+      <View style={styles.successContainer}>
+        <View style={styles.successIcon}>
+          <Ionicons name="checkmark-circle" size={80} color="#16a34a" />
+        </View>
         
-        <h2 className="text-gray-900 text-center mb-2">Check your email</h2>
-        <p className="text-gray-500 text-center mb-8 max-w-sm">
+        <Text style={styles.successTitle}>Check your email</Text>
+        <Text style={styles.successMessage}>
           We've sent a password reset link to {email}
-        </p>
+        </Text>
 
-        <Button
-          onClick={() => navigate('/login')}
-          className="w-full max-w-sm bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={() => navigation.navigate('Login')}
         >
-          Back to Login
-        </Button>
-      </div>
+          <Text style={styles.buttonText}>Back to Login</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 
   return (
-    <div className="h-screen w-full bg-white flex flex-col">
-      <div className="p-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 hover:text-gray-600 transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-      </div>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+        </View>
 
-      <div className="flex-1 flex flex-col px-8 pt-8">
-        <div className="mb-12">
-          <h1 className="text-gray-900 mb-2">Forgot Password</h1>
-          <p className="text-gray-500">
-            Enter your email and we'll send you a reset link
-          </p>
-        </div>
+        <View style={styles.content}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Forgot Password</Text>
+            <Text style={styles.subtitle}>
+              Enter your email and we'll send you a reset link
+            </Text>
+          </View>
 
-        <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-          <div className="space-y-2 mb-8">
-            <Label htmlFor="email" className="text-gray-700">Email</Label>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 h-12 rounded-lg border-gray-200"
-              />
-            </div>
-          </div>
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="mail" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Enter your email"
+                  value={email}
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+              </View>
+            </View>
+          </View>
 
-          <div className="mt-auto pb-8">
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
-            >
-              Send Reset Link
-            </Button>
-          </div>
-        </form>
-      </div>
-    </div>
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>Send Reset Link</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    padding: 24,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 32,
+    paddingTop: 32,
+  },
+  titleContainer: {
+    marginBottom: 48,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  form: {
+    marginBottom: 32,
+  },
+  inputContainer: {
+    gap: 8,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    height: 48,
+    paddingHorizontal: 12,
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: '#111827',
+  },
+  footer: {
+    marginTop: 'auto',
+    paddingBottom: 32,
+  },
+  button: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  successContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+  successIcon: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#dcfce7',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  successMessage: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginBottom: 32,
+    maxWidth: 384,
+  },
+});

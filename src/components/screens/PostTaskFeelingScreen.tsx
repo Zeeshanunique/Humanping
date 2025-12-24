@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function PostTaskFeelingScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { currentMission, updateMission } = useApp();
   const [selectedFeeling, setSelectedFeeling] = useState<string>('');
 
@@ -21,69 +22,188 @@ export default function PostTaskFeelingScreen() {
     if (currentMission && selectedFeeling) {
       updateMission(currentMission.id, { postFeeling: selectedFeeling });
     }
-    navigate('/task-completion');
+    navigation.navigate('TaskCompletion');
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col">
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-6 pb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <LinearGradient
+          colors={['#dcfce7', '#d1fae5']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
 
-        <h1 className="text-gray-900 mb-2">How do you feel now?</h1>
-        <p className="text-gray-500">Reflect on your experience</p>
-      </div>
+          <Text style={styles.title}>How do you feel now?</Text>
+          <Text style={styles.subtitle}>Reflect on your experience</Text>
+        </LinearGradient>
 
-      <div className="flex-1 px-6 pb-6">
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
-          <p className="text-green-800">
-            <span className="text-lg mr-2">🎉</span>
-            Great job completing the mission! Your feelings are valid, whatever they may be.
-          </p>
-        </div>
+        <View style={styles.content}>
+          <View style={styles.encouragementCard}>
+            <Text style={styles.encouragementEmoji}>🎉</Text>
+            <Text style={styles.encouragementText}>
+              Great job completing the mission! Your feelings are valid, whatever they may be.
+            </Text>
+          </View>
 
-        <div className="space-y-3">
-          {feelings.map((feeling) => (
-            <button
-              key={feeling.value}
-              onClick={() => setSelectedFeeling(feeling.value)}
-              className={`w-full p-4 rounded-xl border-2 transition-all ${
-                selectedFeeling === feeling.value
-                  ? 'border-green-600 bg-green-50'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-            >
-              <div className="flex items-center gap-4">
-                <div className="text-4xl">{feeling.emoji}</div>
-                <div className="flex-1 text-left">
-                  <div className="text-gray-900">{feeling.label}</div>
-                </div>
+          <View style={styles.feelingsList}>
+            {feelings.map((feeling) => (
+              <TouchableOpacity
+                key={feeling.value}
+                style={[
+                  styles.feelingButton,
+                  selectedFeeling === feeling.value && styles.feelingButtonActive
+                ]}
+                onPress={() => setSelectedFeeling(feeling.value)}
+              >
+                <Text style={styles.feelingEmoji}>{feeling.emoji}</Text>
+                <Text style={[
+                  styles.feelingLabel,
+                  selectedFeeling === feeling.value && styles.feelingLabelActive
+                ]}>
+                  {feeling.label}
+                </Text>
                 {selectedFeeling === feeling.value && (
-                  <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center">
-                    <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
+                  <View style={styles.checkIcon}>
+                    <Ionicons name="checkmark" size={16} color="#ffffff" />
+                  </View>
                 )}
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
 
-      <div className="px-6 pb-6">
-        <Button
-          onClick={handleContinue}
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={[
+            styles.continueButton,
+            !selectedFeeling && styles.continueButtonDisabled
+          ]}
+          onPress={handleContinue}
           disabled={!selectedFeeling}
-          className="w-full bg-green-600 hover:bg-green-700 text-white rounded-full h-12 disabled:opacity-50"
         >
-          Continue
-        </Button>
-      </div>
-    </div>
+          <Text style={styles.continueButtonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  encouragementCard: {
+    backgroundColor: '#dcfce7',
+    borderWidth: 1,
+    borderColor: '#bbf7d0',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 24,
+  },
+  encouragementEmoji: {
+    fontSize: 18,
+  },
+  encouragementText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#166534',
+  },
+  feelingsList: {
+    gap: 12,
+  },
+  feelingButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+    gap: 16,
+  },
+  feelingButtonActive: {
+    borderColor: '#16a34a',
+    backgroundColor: '#dcfce7',
+  },
+  feelingEmoji: {
+    fontSize: 40,
+  },
+  feelingLabel: {
+    flex: 1,
+    fontSize: 16,
+    color: '#111827',
+  },
+  feelingLabelActive: {
+    fontWeight: '600',
+  },
+  checkIcon: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#16a34a',
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    paddingTop: 16,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+  continueButton: {
+    backgroundColor: '#16a34a',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueButtonDisabled: {
+    opacity: 0.5,
+  },
+  continueButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

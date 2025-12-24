@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Modal } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { Menu, Bell, Target, TrendingUp, Calendar } from 'lucide-react';
-import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from '../ui/sheet';
-import BottomNavigation from '../BottomNavigation';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeDashboard() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { user, streak, missions } = useApp();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -15,158 +14,430 @@ export default function HomeDashboard() {
   const todaysMission = missions.find(m => !m.completed);
 
   return (
-    <div className="min-h-screen w-full bg-white pb-20">
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 pb-32 rounded-b-[32px]">
-        <div className="flex items-center justify-between mb-8">
-          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-            <SheetTrigger asChild>
-              <button className="text-gray-900">
-                <Menu className="w-6 h-6" />
-              </button>
-            </SheetTrigger>
-            <SheetContent side="left" className="w-80 bg-white p-0">
-              <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-              <SheetDescription className="sr-only">
-                Navigate to different sections of the app
-              </SheetDescription>
-              <div className="p-6">
-                <div className="mb-8">
-                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white mb-3">
-                    <span className="text-xl">{user?.name.charAt(0) || 'A'}</span>
-                  </div>
-                  <h3 className="text-gray-900">{user?.name || 'Alex Johnson'}</h3>
-                  <p className="text-gray-500 text-sm">{user?.email || 'alex@example.com'}</p>
-                </div>
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.headerGradient}
+        >
+          <View style={styles.topBar}>
+            <TouchableOpacity onPress={() => setMenuOpen(true)}>
+              <Ionicons name="menu" size={24} color="#111827" />
+            </TouchableOpacity>
 
-                <nav className="space-y-2">
-                  <button
-                    onClick={() => { navigate('/profile'); setMenuOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <Target className="w-5 h-5" />
-                    <span>Profile</span>
-                  </button>
-                  <button
-                    onClick={() => { navigate('/history/all'); setMenuOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <Calendar className="w-5 h-5" />
-                    <span>History</span>
-                  </button>
-                  <button
-                    onClick={() => { navigate('/streaks'); setMenuOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <TrendingUp className="w-5 h-5" />
-                    <span>Streaks</span>
-                  </button>
-                  <button
-                    onClick={() => { navigate('/settings'); setMenuOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <span className="text-lg">⚙️</span>
-                    <span>Settings</span>
-                  </button>
-                  <button
-                    onClick={() => { navigate('/feedback'); setMenuOpen(false); }}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
-                  >
-                    <span className="text-lg">💬</span>
-                    <span>Feedback</span>
-                  </button>
-                </nav>
-              </div>
-            </SheetContent>
-          </Sheet>
-
-          <button
-            onClick={() => navigate('/notifications')}
-            className="text-gray-900 relative"
-          >
-            <Bell className="w-6 h-6" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
-          </button>
-        </div>
-
-        <div className="mb-6">
-          <h2 className="text-gray-900 mb-1">Hello, {user?.name?.split(' ')[0] || 'Alex'}! 👋</h2>
-          <p className="text-gray-500">Ready to grow today?</p>
-        </div>
-
-        <div className="bg-white rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">🔥</span>
-                </div>
-                <div>
-                  <div className="text-gray-900 text-2xl">{streak}</div>
-                  <p className="text-gray-500 text-sm">Day streak</p>
-                </div>
-              </div>
-            </div>
-            <div className="flex-1 text-right">
-              <div className="text-gray-900 text-2xl mb-1">{completedMissions}</div>
-              <p className="text-gray-500 text-sm">Missions done</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="px-6 -mt-20 pb-24">
-        <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg mb-6">
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0">
-              <Target className="w-5 h-5" />
-            </div>
-            <div className="flex-1">
-              <div className="text-sm text-white/80 mb-1">Today's Mission</div>
-              <h3 className="text-white mb-2">{todaysMission?.title || 'Complete your daily mission'}</h3>
-              <p className="text-white/90 text-sm">
-                {todaysMission?.description || 'Start a new mission to build confidence'}
-              </p>
-            </div>
-          </div>
-
-          <Button
-            onClick={() => navigate('/todays-mission')}
-            className="w-full bg-white text-blue-600 hover:bg-gray-100 rounded-full h-11"
-          >
-            Start Mission
-          </Button>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="text-gray-900">Quick Actions</h3>
-          
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => navigate('/history/week')}
-              className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow"
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('Notifications')}
+              style={styles.notificationButton}
             >
-              <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-3">
-                <Calendar className="w-5 h-5 text-purple-600" />
-              </div>
-              <div className="text-gray-900 text-sm">History</div>
-              <div className="text-gray-500 text-xs">View progress</div>
-            </button>
+              <Ionicons name="notifications" size={24} color="#111827" />
+              <View style={styles.notificationDot} />
+            </TouchableOpacity>
+          </View>
 
-            <button
-              onClick={() => navigate('/streaks')}
-              className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md transition-shadow"
+          <View style={styles.greeting}>
+            <Text style={styles.greetingText}>
+              Hello, {user?.name?.split(' ')[0] || 'Alex'}! 👋
+            </Text>
+            <Text style={styles.greetingSubtext}>Ready to grow today?</Text>
+          </View>
+
+          <View style={styles.statsCard}>
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
+                <View style={styles.streakContainer}>
+                  <View style={styles.fireIcon}>
+                    <Text style={styles.fireEmoji}>🔥</Text>
+                  </View>
+                  <View>
+                    <Text style={styles.statNumber}>{streak}</Text>
+                    <Text style={styles.statLabel}>Day streak</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={styles.statItemRight}>
+                <Text style={styles.statNumber}>{completedMissions}</Text>
+                <Text style={styles.statLabel}>Missions done</Text>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+
+        <View style={styles.content}>
+          <LinearGradient
+            colors={['#2563eb', '#9333ea']}
+            style={styles.missionCard}
+          >
+            <View style={styles.missionHeader}>
+              <View style={styles.missionIconContainer}>
+                <Ionicons name="radio-button-on" size={20} color="#ffffff" />
+              </View>
+              <View style={styles.missionTextContainer}>
+                <Text style={styles.missionLabel}>Today's Mission</Text>
+                <Text style={styles.missionTitle}>
+                  {todaysMission?.title || 'Complete your daily mission'}
+                </Text>
+                <Text style={styles.missionDescription}>
+                  {todaysMission?.description || 'Start a new mission to build confidence'}
+                </Text>
+              </View>
+            </View>
+
+            <TouchableOpacity 
+              style={styles.startButton}
+              onPress={() => navigation.navigate('TodaysMission')}
             >
-              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mb-3">
-                <TrendingUp className="w-5 h-5 text-orange-600" />
-              </div>
-              <div className="text-gray-900 text-sm">Streaks</div>
-              <div className="text-gray-500 text-xs">{streak} days</div>
-            </button>
-          </div>
-        </div>
-      </div>
+              <Text style={styles.startButtonText}>Start Mission</Text>
+            </TouchableOpacity>
+          </LinearGradient>
 
-      <BottomNavigation />
-    </div>
+          <View style={styles.quickActions}>
+            <Text style={styles.quickActionsTitle}>Quick Actions</Text>
+            
+            <View style={styles.actionsGrid}>
+              <TouchableOpacity 
+                style={styles.actionCard}
+                onPress={() => navigation.navigate('HistoryTab', { screen: 'History', params: { period: 'week' } })}
+              >
+                <View style={[styles.actionIcon, { backgroundColor: '#f3e8ff' }]}>
+                  <Ionicons name="calendar" size={20} color="#9333ea" />
+                </View>
+                <Text style={styles.actionTitle}>History</Text>
+                <Text style={styles.actionSubtitle}>View progress</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.actionCard}
+                onPress={() => navigation.navigate('Streaks')}
+              >
+                <View style={[styles.actionIcon, { backgroundColor: '#fed7aa' }]}>
+                  <Ionicons name="trending-up" size={20} color="#ea580c" />
+                </View>
+                <Text style={styles.actionTitle}>Streaks</Text>
+                <Text style={styles.actionSubtitle}>{streak} days</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Drawer Menu Modal */}
+      <Modal
+        visible={menuOpen}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setMenuOpen(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity 
+            style={styles.modalBackdrop}
+            activeOpacity={1}
+            onPress={() => setMenuOpen(false)}
+          />
+          <View style={styles.drawerContent}>
+            <View style={styles.drawerHeader}>
+              <LinearGradient
+                colors={['#3b82f6', '#9333ea']}
+                style={styles.avatar}
+              >
+                <Text style={styles.avatarText}>
+                  {user?.name?.charAt(0) || 'A'}
+                </Text>
+              </LinearGradient>
+              <Text style={styles.userName}>{user?.name || 'Alex Johnson'}</Text>
+              <Text style={styles.userEmail}>{user?.email || 'alex@example.com'}</Text>
+            </View>
+
+            <View style={styles.drawerNav}>
+              <TouchableOpacity
+                style={styles.drawerItem}
+                onPress={() => { navigation.navigate('ProfileTab'); setMenuOpen(false); }}
+              >
+                <Ionicons name="person" size={20} color="#374151" />
+                <Text style={styles.drawerItemText}>Profile</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerItem}
+                onPress={() => { navigation.navigate('HistoryTab', { screen: 'History', params: { period: 'all' } }); setMenuOpen(false); }}
+              >
+                <Ionicons name="calendar" size={20} color="#374151" />
+                <Text style={styles.drawerItemText}>History</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerItem}
+                onPress={() => { navigation.navigate('Streaks'); setMenuOpen(false); }}
+              >
+                <Ionicons name="trending-up" size={20} color="#374151" />
+                <Text style={styles.drawerItemText}>Streaks</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerItem}
+                onPress={() => { navigation.navigate('Settings'); setMenuOpen(false); }}
+              >
+                <Ionicons name="settings" size={20} color="#374151" />
+                <Text style={styles.drawerItemText}>Settings</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.drawerItem}
+                onPress={() => { navigation.navigate('Feedback'); setMenuOpen(false); }}
+              >
+                <Ionicons name="chatbubbles" size={20} color="#374151" />
+                <Text style={styles.drawerItemText}>Feedback</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  headerGradient: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 128,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+  },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  notificationButton: {
+    position: 'relative',
+  },
+  notificationDot: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    width: 8,
+    height: 8,
+    backgroundColor: '#ef4444',
+    borderRadius: 4,
+  },
+  greeting: {
+    marginBottom: 24,
+  },
+  greetingText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  greetingSubtext: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  statsCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statItem: {
+    flex: 1,
+  },
+  streakContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  fireIcon: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#dbeafe',
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  fireEmoji: {
+    fontSize: 24,
+  },
+  statItemRight: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  content: {
+    paddingHorizontal: 24,
+    marginTop: -80,
+    paddingBottom: 24,
+  },
+  missionCard: {
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  missionHeader: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  missionIconContainer: {
+    width: 40,
+    height: 40,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  missionTextContainer: {
+    flex: 1,
+  },
+  missionLabel: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    marginBottom: 4,
+  },
+  missionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginBottom: 8,
+  },
+  missionDescription: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  startButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 24,
+    height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  startButtonText: {
+    color: '#2563eb',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  quickActions: {
+    gap: 16,
+  },
+  quickActionsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  actionCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    padding: 16,
+  },
+  actionIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  actionTitle: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  actionSubtitle: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  modalOverlay: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  drawerContent: {
+    width: 320,
+    backgroundColor: '#ffffff',
+    paddingTop: 60,
+  },
+  drawerHeader: {
+    padding: 24,
+    marginBottom: 32,
+  },
+  avatar: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  avatarText: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  drawerNav: {
+    gap: 8,
+  },
+  drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginHorizontal: 8,
+    borderRadius: 8,
+  },
+  drawerItemText: {
+    fontSize: 16,
+    color: '#374151',
+  },
+});

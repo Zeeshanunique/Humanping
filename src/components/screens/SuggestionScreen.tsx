@@ -1,10 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { ArrowLeft, Lightbulb, RefreshCw } from 'lucide-react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SuggestionScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { currentMission } = useApp();
 
   const suggestions = [
@@ -15,69 +16,225 @@ export default function SuggestionScreen() {
   ];
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col">
-      <div className="bg-gradient-to-br from-yellow-50 to-orange-50 p-6 pb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <LinearGradient
+          colors={['#fef3c7', '#fed7aa']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center">
-            <Lightbulb className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-gray-900">Suggestions</h1>
-            <p className="text-gray-500 text-sm">Here are some tips</p>
-          </div>
-        </div>
-      </div>
-
-      <div className="flex-1 px-6 pb-6">
-        <div className="bg-white border border-gray-200 rounded-2xl p-4 mb-6">
-          <h3 className="text-gray-900 mb-1">{currentMission?.title}</h3>
-          <p className="text-gray-600 text-sm">{currentMission?.description}</p>
-        </div>
-
-        <h3 className="text-gray-900 mb-4">Ways to approach this:</h3>
-
-        <div className="space-y-3 mb-6">
-          {suggestions.map((suggestion, index) => (
-            <div
-              key={index}
-              className="flex gap-3 p-4 bg-gradient-to-r from-yellow-50 to-orange-50 border border-orange-200 rounded-xl"
+          <View style={styles.headerContent}>
+            <LinearGradient
+              colors={['#fbbf24', '#f97316']}
+              style={styles.iconContainer}
             >
-              <div className="w-6 h-6 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0 text-white text-sm">
-                {index + 1}
-              </div>
-              <p className="text-gray-700 flex-1">{suggestion}</p>
-            </div>
-          ))}
-        </div>
+              <Ionicons name="bulb" size={24} color="#ffffff" />
+            </LinearGradient>
+            <View>
+              <Text style={styles.title}>Suggestions</Text>
+              <Text style={styles.subtitle}>Here are some tips</Text>
+            </View>
+          </View>
+        </LinearGradient>
 
-        <button className="w-full flex items-center justify-center gap-2 text-blue-600 hover:text-blue-700 py-3">
-          <RefreshCw className="w-4 h-4" />
-          <span>Get more suggestions</span>
-        </button>
-      </div>
+        <View style={styles.content}>
+          <View style={styles.missionCard}>
+            <Text style={styles.missionTitle}>{currentMission?.title}</Text>
+            <Text style={styles.missionDescription}>{currentMission?.description}</Text>
+          </View>
 
-      <div className="px-6 pb-6 space-y-3">
-        <Button
-          onClick={() => navigate('/task-status')}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
+          <Text style={styles.sectionTitle}>Ways to approach this:</Text>
+
+          <View style={styles.suggestionsList}>
+            {suggestions.map((suggestion, index) => (
+              <LinearGradient
+                key={index}
+                colors={['#fef3c7', '#fed7aa']}
+                style={styles.suggestionItem}
+              >
+                <LinearGradient
+                  colors={['#fbbf24', '#f97316']}
+                  style={styles.suggestionNumber}
+                >
+                  <Text style={styles.suggestionNumberText}>{index + 1}</Text>
+                </LinearGradient>
+                <Text style={styles.suggestionText}>{suggestion}</Text>
+              </LinearGradient>
+            ))}
+          </View>
+
+          <TouchableOpacity style={styles.moreButton}>
+            <Ionicons name="refresh" size={16} color="#2563eb" />
+            <Text style={styles.moreButtonText}>Get more suggestions</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={styles.readyButton}
+          onPress={() => navigation.navigate('TaskStatus')}
         >
-          I'm Ready to Start
-        </Button>
-        <Button
-          onClick={() => navigate('/task-status')}
-          variant="outline"
-          className="w-full rounded-full h-12 border-gray-300"
+          <Text style={styles.readyButtonText}>I'm Ready to Start</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.skipButton}
+          onPress={() => navigation.navigate('TaskStatus')}
         >
-          Skip Suggestions
-        </Button>
-      </div>
-    </div>
+          <Text style={styles.skipButtonText}>Skip Suggestions</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  missionCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 24,
+  },
+  missionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  missionDescription: {
+    fontSize: 14,
+    color: '#374151',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  suggestionsList: {
+    gap: 12,
+    marginBottom: 24,
+  },
+  suggestionItem: {
+    flexDirection: 'row',
+    gap: 12,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#fed7aa',
+  },
+  suggestionNumber: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  suggestionNumberText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  suggestionText: {
+    flex: 1,
+    fontSize: 16,
+    color: '#374151',
+  },
+  moreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingVertical: 12,
+  },
+  moreButtonText: {
+    fontSize: 16,
+    color: '#2563eb',
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    paddingTop: 16,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+    gap: 12,
+  },
+  readyButton: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  readyButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  skipButton: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  skipButtonText: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

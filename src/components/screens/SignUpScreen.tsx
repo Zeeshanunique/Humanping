@@ -1,118 +1,198 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { ArrowLeft, Mail, Lock, User } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SignUpScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { signup } = useApp();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSignUp = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSignUp = () => {
     if (!name || !email || !password) {
-      toast.error('Please fill in all fields');
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
     signup(name, email, password);
-    toast.success('Account created successfully!');
-    navigate('/home');
+    Alert.alert('Success', 'Account created successfully!');
+    navigation.navigate('Main');
   };
 
   return (
-    <div className="h-screen w-full bg-white flex flex-col">
-      <div className="p-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 hover:text-gray-600 transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-      </div>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+        </View>
 
-      <div className="flex-1 flex flex-col px-8 pt-8">
-        <div className="mb-12">
-          <h1 className="text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-500">
-            Start your journey to build social confidence
-          </p>
-        </div>
+        <View style={styles.content}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.subtitle}>
+              Start your journey to build social confidence
+            </Text>
+          </View>
 
-        <form onSubmit={handleSignUp} className="flex-1 flex flex-col">
-          <div className="space-y-6 mb-8">
-            <div className="space-y-2">
-              <Label htmlFor="name" className="text-gray-700">Full Name</Label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="name"
-                  type="text"
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Full Name</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="person" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
                   placeholder="Enter your name"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="pl-10 h-12 rounded-lg border-gray-200"
+                  onChangeText={setName}
+                  autoCapitalize="words"
                 />
-              </div>
-            </div>
+              </View>
+            </View>
 
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="mail" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
                   placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 rounded-lg border-gray-200"
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                 />
-              </div>
-            </div>
+              </View>
+            </View>
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-gray-700">Password</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="password"
-                  type="password"
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Password</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="lock-closed" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
                   placeholder="Create a password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 h-12 rounded-lg border-gray-200"
+                  onChangeText={setPassword}
+                  secureTextEntry
                 />
-              </div>
-            </div>
-          </div>
+              </View>
+            </View>
+          </View>
 
-          <div className="mt-auto pb-8">
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
-            >
-              Create Account
-            </Button>
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.button} onPress={handleSignUp}>
+              <Text style={styles.buttonText}>Create Account</Text>
+            </TouchableOpacity>
 
-            <p className="text-center text-gray-500 text-sm mt-4">
-              Already have an account?{' '}
-              <button
-                type="button"
-                onClick={() => navigate('/login')}
-                className="text-blue-600 hover:underline"
-              >
-                Log in
-              </button>
-            </p>
-          </div>
-        </form>
-      </div>
-    </div>
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>Already have an account? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.loginLink}>Log in</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    padding: 24,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 32,
+    paddingTop: 32,
+  },
+  titleContainer: {
+    marginBottom: 48,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  form: {
+    gap: 24,
+    marginBottom: 32,
+  },
+  inputContainer: {
+    gap: 8,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    height: 48,
+    paddingHorizontal: 12,
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: '#111827',
+  },
+  footer: {
+    marginTop: 'auto',
+    paddingBottom: 32,
+  },
+  button: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  loginText: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  loginLink: {
+    fontSize: 14,
+    color: '#2563eb',
+    fontWeight: '500',
+  },
+});

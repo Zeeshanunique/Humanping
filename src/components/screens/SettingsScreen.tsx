@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Switch, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { Switch } from '../ui/switch';
-import { ArrowLeft, ChevronRight, Bell, Moon, Volume2, Lock, HelpCircle, LogOut } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function SettingsScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { logout } = useApp();
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
@@ -15,106 +14,201 @@ export default function SettingsScreen() {
 
   const handleLogout = () => {
     logout();
-    toast.success('Logged out successfully');
-    navigate('/');
+    Alert.alert('Success', 'Logged out successfully');
+    navigation.navigate('Splash');
   };
 
   return (
-    <div className="min-h-screen w-full bg-white">
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 pb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-
-        <h1 className="text-gray-900">Settings</h1>
-      </div>
-
-      <div className="px-6 pb-6">
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-gray-900 mb-3">Preferences</h3>
-            <div className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-200">
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <Bell className="w-5 h-5 text-gray-500" />
-                  <div>
-                    <div className="text-gray-900">Notifications</div>
-                    <div className="text-gray-500 text-sm">Daily reminders</div>
-                  </div>
-                </div>
-                <Switch checked={notifications} onCheckedChange={setNotifications} />
-              </div>
-
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <Moon className="w-5 h-5 text-gray-500" />
-                  <div>
-                    <div className="text-gray-900">Dark Mode</div>
-                    <div className="text-gray-500 text-sm">Theme preference</div>
-                  </div>
-                </div>
-                <Switch checked={darkMode} onCheckedChange={setDarkMode} />
-              </div>
-
-              <div className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <Volume2 className="w-5 h-5 text-gray-500" />
-                  <div>
-                    <div className="text-gray-900">Sounds</div>
-                    <div className="text-gray-500 text-sm">App sounds</div>
-                  </div>
-                </div>
-                <Switch checked={sounds} onCheckedChange={setSounds} />
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-gray-900 mb-3">Account</h3>
-            <div className="bg-white border border-gray-200 rounded-xl divide-y divide-gray-200">
-              <button
-                onClick={() => toast.info('Privacy settings coming soon')}
-                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Lock className="w-5 h-5 text-gray-500" />
-                  <div className="text-left">
-                    <div className="text-gray-900">Privacy</div>
-                    <div className="text-gray-500 text-sm">Manage data</div>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </button>
-
-              <button
-                onClick={() => navigate('/feedback')}
-                className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <HelpCircle className="w-5 h-5 text-gray-500" />
-                  <div className="text-left">
-                    <div className="text-gray-900">Help & Support</div>
-                    <div className="text-gray-500 text-sm">Get assistance</div>
-                  </div>
-                </div>
-                <ChevronRight className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
-          </div>
-
-          <Button
-            onClick={handleLogout}
-            variant="outline"
-            className="w-full rounded-full h-12 border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
           >
-            <LogOut className="w-5 h-5 mr-2" />
-            Log Out
-          </Button>
-        </div>
-      </div>
-    </div>
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+
+          <Text style={styles.title}>Settings</Text>
+        </LinearGradient>
+
+        <View style={styles.content}>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Preferences</Text>
+            <View style={styles.card}>
+              <View style={styles.settingItem}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="notifications" size={20} color="#6b7280" />
+                  <View style={styles.settingText}>
+                    <Text style={styles.settingTitle}>Notifications</Text>
+                    <Text style={styles.settingSubtitle}>Daily reminders</Text>
+                  </View>
+                </View>
+                <Switch value={notifications} onValueChange={setNotifications} />
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.settingItem}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="moon" size={20} color="#6b7280" />
+                  <View style={styles.settingText}>
+                    <Text style={styles.settingTitle}>Dark Mode</Text>
+                    <Text style={styles.settingSubtitle}>Theme preference</Text>
+                  </View>
+                </View>
+                <Switch value={darkMode} onValueChange={setDarkMode} />
+              </View>
+
+              <View style={styles.divider} />
+
+              <View style={styles.settingItem}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="volume-high" size={20} color="#6b7280" />
+                  <View style={styles.settingText}>
+                    <Text style={styles.settingTitle}>Sounds</Text>
+                    <Text style={styles.settingSubtitle}>App sounds</Text>
+                  </View>
+                </View>
+                <Switch value={sounds} onValueChange={setSounds} />
+              </View>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Account</Text>
+            <View style={styles.card}>
+              <TouchableOpacity 
+                style={styles.settingItem}
+                onPress={() => Alert.alert('Info', 'Privacy settings coming soon')}
+              >
+                <View style={styles.settingInfo}>
+                  <Ionicons name="lock-closed" size={20} color="#6b7280" />
+                  <View style={styles.settingText}>
+                    <Text style={styles.settingTitle}>Privacy</Text>
+                    <Text style={styles.settingSubtitle}>Manage data</Text>
+                  </View>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+              </TouchableOpacity>
+
+              <View style={styles.divider} />
+
+              <TouchableOpacity 
+                style={styles.settingItem}
+                onPress={() => navigation.navigate('Feedback')}
+              >
+                <View style={styles.settingInfo}>
+                  <Ionicons name="help-circle" size={20} color="#6b7280" />
+                  <View style={styles.settingText}>
+                    <Text style={styles.settingTitle}>Help & Support</Text>
+                    <Text style={styles.settingSubtitle}>Get assistance</Text>
+                  </View>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.logoutButton}
+            onPress={handleLogout}
+          >
+            <Ionicons name="log-out" size={20} color="#dc2626" />
+            <Text style={styles.logoutText}>Log Out</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  settingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+    gap: 12,
+  },
+  settingText: {
+    flex: 1,
+  },
+  settingTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 2,
+  },
+  settingSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e5e7eb',
+  },
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    borderRadius: 24,
+    height: 48,
+    backgroundColor: '#ffffff',
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#dc2626',
+  },
+});

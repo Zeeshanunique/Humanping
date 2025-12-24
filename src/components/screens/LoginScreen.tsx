@@ -1,111 +1,195 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { ArrowLeft, Mail, Lock } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { login } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = () => {
     if (!email || !password) {
-      toast.error('Please fill in all fields');
+      Alert.alert('Error', 'Please fill in all fields');
       return;
     }
     login(email, password);
-    toast.success('Welcome back!');
-    navigate('/home');
+    Alert.alert('Success', 'Welcome back!');
+    navigation.navigate('Main');
   };
 
   return (
-    <div className="h-screen w-full bg-white flex flex-col">
-      <div className="p-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 hover:text-gray-600 transition-colors"
-        >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-      </div>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+        </View>
 
-      <div className="flex-1 flex flex-col px-8 pt-8">
-        <div className="mb-12">
-          <h1 className="text-gray-900 mb-2">Welcome Back</h1>
-          <p className="text-gray-500">
-            Continue your journey
-          </p>
-        </div>
+        <View style={styles.content}>
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>Welcome Back</Text>
+            <Text style={styles.subtitle}>Continue your journey</Text>
+          </View>
 
-        <form onSubmit={handleLogin} className="flex-1 flex flex-col">
-          <div className="space-y-6 mb-8">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-gray-700">Email</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="email"
-                  type="email"
+          <View style={styles.form}>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Email</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="mail" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
                   placeholder="Enter your email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 h-12 rounded-lg border-gray-200"
+                  onChangeText={setEmail}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                 />
-              </div>
-            </div>
+              </View>
+            </View>
 
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="password" className="text-gray-700">Password</Label>
-                <button
-                  type="button"
-                  onClick={() => navigate('/forgot-password')}
-                  className="text-sm text-blue-600 hover:underline"
-                >
-                  Forgot?
-                </button>
-              </div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                <Input
-                  id="password"
-                  type="password"
+            <View style={styles.inputContainer}>
+              <View style={styles.labelRow}>
+                <Text style={styles.label}>Password</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+                  <Text style={styles.forgotText}>Forgot?</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="lock-closed" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
                   placeholder="Enter your password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 h-12 rounded-lg border-gray-200"
+                  onChangeText={setPassword}
+                  secureTextEntry
                 />
-              </div>
-            </div>
-          </div>
+              </View>
+            </View>
+          </View>
 
-          <div className="mt-auto pb-8">
-            <Button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
-            >
-              Log In
-            </Button>
+          <View style={styles.footer}>
+            <TouchableOpacity style={styles.button} onPress={handleLogin}>
+              <Text style={styles.buttonText}>Log In</Text>
+            </TouchableOpacity>
 
-            <p className="text-center text-gray-500 text-sm mt-4">
-              Don't have an account?{' '}
-              <button
-                type="button"
-                onClick={() => navigate('/signup')}
-                className="text-blue-600 hover:underline"
-              >
-                Sign up
-              </button>
-            </p>
-          </div>
-        </form>
-      </div>
-    </div>
+            <View style={styles.signupContainer}>
+              <Text style={styles.signupText}>Don't have an account? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+                <Text style={styles.signupLink}>Sign up</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    padding: 24,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 32,
+    paddingTop: 32,
+  },
+  titleContainer: {
+    marginBottom: 48,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  form: {
+    gap: 24,
+    marginBottom: 32,
+  },
+  inputContainer: {
+    gap: 8,
+  },
+  labelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+  },
+  forgotText: {
+    fontSize: 14,
+    color: '#2563eb',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 8,
+    height: 48,
+    paddingHorizontal: 12,
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: '#111827',
+  },
+  footer: {
+    marginTop: 'auto',
+    paddingBottom: 32,
+  },
+  button: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  signupContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  signupText: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  signupLink: {
+    fontSize: 14,
+    color: '#2563eb',
+    fontWeight: '500',
+  },
+});

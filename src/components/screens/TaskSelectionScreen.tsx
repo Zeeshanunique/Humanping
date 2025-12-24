@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { ArrowLeft, MapPin } from 'lucide-react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TaskSelectionScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { currentMission, updateMission } = useApp();
   const [selectedLocation, setSelectedLocation] = useState<string>('');
 
@@ -23,62 +24,180 @@ export default function TaskSelectionScreen() {
       const locationLabel = locations.find(l => l.value === selectedLocation)?.label || selectedLocation;
       updateMission(currentMission.id, { location: locationLabel });
     }
-    navigate('/suggestion');
+    navigation.navigate('Suggestion');
   };
 
   return (
-    <div className="min-h-screen w-full bg-white flex flex-col">
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 pb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
 
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-            <MapPin className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-gray-900">Where are you?</h1>
-            <p className="text-gray-500 text-sm">Select your location</p>
-          </div>
-        </div>
-      </div>
+          <View style={styles.headerContent}>
+            <View style={styles.iconContainer}>
+              <Ionicons name="location" size={24} color="#ffffff" />
+            </View>
+            <View>
+              <Text style={styles.title}>Where are you?</Text>
+              <Text style={styles.subtitle}>Select your location</Text>
+            </View>
+          </View>
+        </LinearGradient>
 
-      <div className="flex-1 px-6 pb-6">
-        <p className="text-gray-600 mb-6">
-          This helps us understand the context of your mission
-        </p>
+        <View style={styles.content}>
+          <Text style={styles.description}>
+            This helps us understand the context of your mission
+          </Text>
 
-        <div className="grid grid-cols-2 gap-3">
-          {locations.map((location) => (
-            <button
-              key={location.value}
-              onClick={() => setSelectedLocation(location.value)}
-              className={`p-4 rounded-xl border-2 transition-all ${
-                selectedLocation === location.value
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-            >
-              <div className="text-3xl mb-2">{location.icon}</div>
-              <div className="text-gray-900 text-sm">{location.label}</div>
-            </button>
-          ))}
-        </div>
-      </div>
+          <View style={styles.locationsGrid}>
+            {locations.map((location) => (
+              <TouchableOpacity
+                key={location.value}
+                style={[
+                  styles.locationButton,
+                  selectedLocation === location.value && styles.locationButtonActive
+                ]}
+                onPress={() => setSelectedLocation(location.value)}
+              >
+                <Text style={styles.locationIcon}>{location.icon}</Text>
+                <Text style={[
+                  styles.locationLabel,
+                  selectedLocation === location.value && styles.locationLabelActive
+                ]}>
+                  {location.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
 
-      <div className="px-6 pb-6">
-        <Button
-          onClick={handleContinue}
+      <View style={styles.footer}>
+        <TouchableOpacity 
+          style={[
+            styles.continueButton,
+            !selectedLocation && styles.continueButtonDisabled
+          ]}
+          onPress={handleContinue}
           disabled={!selectedLocation}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12 disabled:opacity-50"
         >
-          Continue
-        </Button>
-      </div>
-    </div>
+          <Text style={styles.continueButtonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  iconContainer: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  description: {
+    fontSize: 16,
+    color: '#374151',
+    marginBottom: 24,
+  },
+  locationsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  locationButton: {
+    width: '47%',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+  },
+  locationButtonActive: {
+    borderColor: '#2563eb',
+    backgroundColor: '#eff6ff',
+  },
+  locationIcon: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  locationLabel: {
+    fontSize: 14,
+    color: '#111827',
+    textAlign: 'center',
+  },
+  locationLabelActive: {
+    fontWeight: '600',
+  },
+  footer: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    paddingTop: 16,
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+  continueButton: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueButtonDisabled: {
+    opacity: 0.5,
+  },
+  continueButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

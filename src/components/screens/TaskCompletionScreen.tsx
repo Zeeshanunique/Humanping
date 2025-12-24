@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { Trophy, Sparkles, Share2 } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TaskCompletionScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { currentMission, updateMission, incrementStreak } = useApp();
 
   const handleComplete = () => {
@@ -16,85 +16,258 @@ export default function TaskCompletionScreen() {
       });
       incrementStreak();
     }
-    toast.success('Mission completed! 🎉');
-    navigate('/home');
+    Alert.alert('Success', 'Mission completed! 🎉');
+    navigation.navigate('HomeTab');
   };
 
   const handleShare = () => {
-    toast.success('Sharing functionality coming soon!');
+    Alert.alert('Info', 'Sharing functionality coming soon!');
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-600 to-purple-600 flex flex-col items-center justify-center p-6">
-      <div className="text-center mb-8">
-        <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-          <Trophy className="w-16 h-16 text-yellow-500" />
-        </div>
+    <LinearGradient
+      colors={['#2563eb', '#9333ea']}
+      style={styles.container}
+    >
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.content}>
+          <View style={styles.trophyContainer}>
+            <View style={styles.trophyCircle}>
+              <Ionicons name="trophy" size={64} color="#fbbf24" />
+            </View>
+          </View>
 
-        <h1 className="text-white mb-3">Mission Complete!</h1>
-        <p className="text-white/90 max-w-sm mx-auto">
-          You did it! Every small step builds your confidence.
-        </p>
-      </div>
+          <Text style={styles.title}>Mission Complete!</Text>
+          <Text style={styles.subtitle}>
+            You did it! Every small step builds your confidence.
+          </Text>
 
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 max-w-sm w-full mb-8">
-        <div className="text-center mb-6">
-          <div className="text-white/70 text-sm mb-2">Today's Mission</div>
-          <h3 className="text-white mb-3">{currentMission?.title}</h3>
-          <div className="flex items-center justify-center gap-6">
-            <div>
-              <div className="text-white text-2xl mb-1">+10</div>
-              <div className="text-white/70 text-xs">Points</div>
-            </div>
-            <div className="w-px h-12 bg-white/20" />
-            <div>
-              <div className="text-white text-2xl mb-1">🔥</div>
-              <div className="text-white/70 text-xs">Streak</div>
-            </div>
-          </div>
-        </div>
+          <View style={styles.missionCard}>
+            <Text style={styles.missionLabel}>Today's Mission</Text>
+            <Text style={styles.missionTitle}>{currentMission?.title}</Text>
+            
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
+                <Text style={styles.statValue}>+10</Text>
+                <Text style={styles.statLabel}>Points</Text>
+              </View>
+              <View style={styles.divider} />
+              <View style={styles.statItem}>
+                <Text style={styles.statEmoji}>🔥</Text>
+                <Text style={styles.statLabel}>Streak</Text>
+              </View>
+            </View>
 
-        <div className="space-y-3">
-          {currentMission?.feeling && (
-            <div className="bg-white/10 rounded-xl p-3">
-              <div className="text-white/70 text-xs mb-1">Before</div>
-              <div className="text-white capitalize">{currentMission.feeling}</div>
-            </div>
-          )}
-          {currentMission?.postFeeling && (
-            <div className="bg-white/10 rounded-xl p-3">
-              <div className="text-white/70 text-xs mb-1">After</div>
-              <div className="text-white capitalize">{currentMission.postFeeling}</div>
-            </div>
-          )}
-        </div>
-      </div>
+            <View style={styles.feelingsSection}>
+              {currentMission?.feeling && (
+                <View style={styles.feelingCard}>
+                  <Text style={styles.feelingLabel}>Before</Text>
+                  <Text style={styles.feelingValue}>
+                    {currentMission.feeling.charAt(0).toUpperCase() + currentMission.feeling.slice(1)}
+                  </Text>
+                </View>
+              )}
+              {currentMission?.postFeeling && (
+                <View style={styles.feelingCard}>
+                  <Text style={styles.feelingLabel}>After</Text>
+                  <Text style={styles.feelingValue}>
+                    {currentMission.postFeeling.charAt(0).toUpperCase() + currentMission.postFeeling.slice(1)}
+                  </Text>
+                </View>
+              )}
+            </View>
+          </View>
 
-      <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 max-w-sm w-full mb-8">
-        <div className="flex items-center gap-3">
-          <Sparkles className="w-6 h-6 text-yellow-300" />
-          <p className="text-white text-sm">
-            You're building confidence one mission at a time. Keep going!
-          </p>
-        </div>
-      </div>
+          <View style={styles.encouragementCard}>
+            <Ionicons name="sparkles" size={24} color="#fbbf24" />
+            <Text style={styles.encouragementText}>
+              You're building confidence one mission at a time. Keep going!
+            </Text>
+          </View>
 
-      <div className="space-y-3 w-full max-w-sm">
-        <Button
-          onClick={handleComplete}
-          className="w-full bg-white text-blue-600 hover:bg-gray-100 rounded-full h-12"
-        >
-          Back to Home
-        </Button>
-        <Button
-          onClick={handleShare}
-          variant="outline"
-          className="w-full bg-transparent border-2 border-white text-white hover:bg-white/10 rounded-full h-12"
-        >
-          <Share2 className="w-4 h-4 mr-2" />
-          Share Achievement
-        </Button>
-      </div>
-    </div>
+          <View style={styles.buttons}>
+            <TouchableOpacity 
+              style={styles.homeButton}
+              onPress={handleComplete}
+            >
+              <Text style={styles.homeButtonText}>Back to Home</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.shareButton}
+              onPress={handleShare}
+            >
+              <Ionicons name="share-social" size={16} color="#ffffff" />
+              <Text style={styles.shareButtonText}>Share Achievement</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </LinearGradient>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: 24,
+  },
+  content: {
+    alignItems: 'center',
+  },
+  trophyContainer: {
+    marginBottom: 32,
+  },
+  trophyCircle: {
+    width: 128,
+    height: 128,
+    backgroundColor: '#ffffff',
+    borderRadius: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    marginBottom: 32,
+    maxWidth: 384,
+  },
+  missionCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
+    width: '100%',
+    maxWidth: 384,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  missionLabel: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  missionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#ffffff',
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  statsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 24,
+    marginBottom: 24,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    marginBottom: 4,
+  },
+  statEmoji: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.7)',
+  },
+  divider: {
+    width: 1,
+    height: 48,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  feelingsSection: {
+    gap: 12,
+  },
+  feelingCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    padding: 12,
+  },
+  feelingLabel: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginBottom: 4,
+  },
+  feelingValue: {
+    fontSize: 16,
+    color: '#ffffff',
+  },
+  encouragementCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    width: '100%',
+    maxWidth: 384,
+  },
+  encouragementText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#ffffff',
+  },
+  buttons: {
+    width: '100%',
+    maxWidth: 384,
+    gap: 12,
+  },
+  homeButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  homeButtonText: {
+    color: '#2563eb',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  shareButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderWidth: 2,
+    borderColor: '#ffffff',
+    borderRadius: 24,
+    height: 48,
+  },
+  shareButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

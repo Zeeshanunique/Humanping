@@ -1,51 +1,140 @@
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Target, CheckCircle2 } from 'lucide-react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Intro3Screen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
 
   return (
-    <div className="h-screen w-full bg-blue-600 flex flex-col items-center justify-center px-8 relative overflow-hidden">
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-32 h-32 bg-white/10 rounded-full flex items-center justify-center">
-        <Target className="w-16 h-16 text-white" strokeWidth={1.5} />
-      </div>
+    <View style={styles.container}>
+      <View style={styles.targetIcon}>
+        <Ionicons name="radio-button-on" size={64} color="#ffffff" />
+      </View>
 
-      <div className="flex-1 flex flex-col items-center justify-center max-w-md">
-        <h1 className="text-white text-center mb-16">
+      <View style={styles.content}>
+        <Text style={styles.title}>
           Go do your HumanPing!
-        </h1>
+        </Text>
 
-        <div className="w-full space-y-4 mb-12">
-          <Button
-            onClick={() => navigate('/signup')}
-            className="w-full bg-white text-blue-600 hover:bg-gray-100 rounded-full h-12 flex items-center justify-center gap-2"
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity 
+            style={styles.primaryButton}
+            onPress={() => navigation.navigate('SignUp')}
           >
-            <CheckCircle2 className="w-5 h-5" />
-            Get Started
-          </Button>
+            <Ionicons name="checkmark-circle" size={20} color="#2563eb" />
+            <Text style={styles.primaryButtonText}>Get Started</Text>
+          </TouchableOpacity>
 
-          <Button
-            onClick={() => navigate('/login')}
-            variant="outline"
-            className="w-full bg-transparent text-white border-2 border-white hover:bg-white/10 rounded-full h-12"
+          <TouchableOpacity 
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate('Login')}
           >
-            I have an account
-          </Button>
-        </div>
+            <Text style={styles.secondaryButtonText}>I have an account</Text>
+          </TouchableOpacity>
+        </View>
 
-        <p className="text-white/70 text-center text-sm">
+        <Text style={styles.subtitle}>
           Join thousands building social confidence, one small action at a time
-        </p>
-      </div>
+        </Text>
+      </View>
 
-      <div className="px-8 pb-12">
-        <div className="flex items-center justify-center gap-2">
-          <div className="w-2 h-2 bg-white/40 rounded-full" />
-          <div className="w-2 h-2 bg-white/40 rounded-full" />
-          <div className="w-8 h-2 bg-white rounded-full" />
-        </div>
-      </div>
-    </div>
+      <View style={styles.footer}>
+        <View style={styles.pagination}>
+          <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.dotActive]} />
+        </View>
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#2563eb',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+  },
+  targetIcon: {
+    position: 'absolute',
+    top: 80,
+    width: 128,
+    height: 128,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 64,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    maxWidth: 448,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+    marginBottom: 64,
+  },
+  buttonContainer: {
+    width: '100%',
+    gap: 16,
+    marginBottom: 48,
+  },
+  primaryButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 24,
+    height: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  primaryButtonText: {
+    color: '#2563eb',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#ffffff',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  secondaryButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  subtitle: {
+    color: 'rgba(255, 255, 255, 0.7)',
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  footer: {
+    paddingBottom: 48,
+  },
+  pagination: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  dotActive: {
+    width: 32,
+    backgroundColor: '#ffffff',
+  },
+});

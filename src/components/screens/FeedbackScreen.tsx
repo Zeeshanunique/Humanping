@@ -1,99 +1,207 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Textarea } from '../ui/textarea';
-import { ArrowLeft, Send } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function FeedbackScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const [feedback, setFeedback] = useState('');
   const [category, setCategory] = useState<string>('general');
 
   const handleSubmit = () => {
     if (!feedback.trim()) {
-      toast.error('Please enter your feedback');
+      Alert.alert('Error', 'Please enter your feedback');
       return;
     }
-    toast.success('Thank you for your feedback!');
+    Alert.alert('Success', 'Thank you for your feedback!');
     setFeedback('');
-    setTimeout(() => navigate(-1), 1000);
+    setTimeout(() => navigation.goBack(), 1000);
   };
 
   return (
-    <div className="min-h-screen w-full bg-white">
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 pb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
-
-        <h1 className="text-gray-900 mb-2">Feedback</h1>
-        <p className="text-gray-500">We'd love to hear from you</p>
-      </div>
-
-      <div className="px-6 pb-6">
-        <div className="space-y-6">
-          <div>
-            <label className="text-gray-900 mb-3 block">Category</label>
-            <div className="grid grid-cols-3 gap-3">
-              <button
-                onClick={() => setCategory('general')}
-                className={`p-3 rounded-xl border-2 transition-all ${
-                  category === 'general'
-                    ? 'border-blue-600 bg-blue-50 text-blue-600'
-                    : 'border-gray-200 bg-white text-gray-600'
-                }`}
-              >
-                <div className="text-2xl mb-1">💬</div>
-                <div className="text-xs">General</div>
-              </button>
-              <button
-                onClick={() => setCategory('bug')}
-                className={`p-3 rounded-xl border-2 transition-all ${
-                  category === 'bug'
-                    ? 'border-blue-600 bg-blue-50 text-blue-600'
-                    : 'border-gray-200 bg-white text-gray-600'
-                }`}
-              >
-                <div className="text-2xl mb-1">🐛</div>
-                <div className="text-xs">Bug</div>
-              </button>
-              <button
-                onClick={() => setCategory('feature')}
-                className={`p-3 rounded-xl border-2 transition-all ${
-                  category === 'feature'
-                    ? 'border-blue-600 bg-blue-50 text-blue-600'
-                    : 'border-gray-200 bg-white text-gray-600'
-                }`}
-              >
-                <div className="text-2xl mb-1">✨</div>
-                <div className="text-xs">Feature</div>
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <label className="text-gray-900 mb-3 block">Your Feedback</label>
-            <Textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Tell us what you think..."
-              className="min-h-[200px] resize-none rounded-xl border-gray-200"
-            />
-          </div>
-
-          <Button
-            onClick={handleSubmit}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
           >
-            <Send className="w-4 h-4 mr-2" />
-            Send Feedback
-          </Button>
-        </div>
-      </div>
-    </div>
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+
+          <Text style={styles.title}>Feedback</Text>
+          <Text style={styles.subtitle}>We'd love to hear from you</Text>
+        </LinearGradient>
+
+        <View style={styles.content}>
+          <View style={styles.section}>
+            <Text style={styles.label}>Category</Text>
+            <View style={styles.categoryGrid}>
+              <TouchableOpacity
+                style={[
+                  styles.categoryButton,
+                  category === 'general' && styles.categoryButtonActive
+                ]}
+                onPress={() => setCategory('general')}
+              >
+                <Text style={styles.categoryEmoji}>💬</Text>
+                <Text style={[
+                  styles.categoryText,
+                  category === 'general' && styles.categoryTextActive
+                ]}>General</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.categoryButton,
+                  category === 'bug' && styles.categoryButtonActive
+                ]}
+                onPress={() => setCategory('bug')}
+              >
+                <Text style={styles.categoryEmoji}>🐛</Text>
+                <Text style={[
+                  styles.categoryText,
+                  category === 'bug' && styles.categoryTextActive
+                ]}>Bug</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.categoryButton,
+                  category === 'feature' && styles.categoryButtonActive
+                ]}
+                onPress={() => setCategory('feature')}
+              >
+                <Text style={styles.categoryEmoji}>✨</Text>
+                <Text style={[
+                  styles.categoryText,
+                  category === 'feature' && styles.categoryTextActive
+                ]}>Feature</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.label}>Your Feedback</Text>
+            <TextInput
+              value={feedback}
+              onChangeText={setFeedback}
+              placeholder="Tell us what you think..."
+              placeholderTextColor="#9ca3af"
+              multiline
+              style={styles.textArea}
+              textAlignVertical="top"
+            />
+          </View>
+
+          <TouchableOpacity 
+            style={styles.submitButton}
+            onPress={handleSubmit}
+          >
+            <Ionicons name="send" size={16} color="#ffffff" />
+            <Text style={styles.submitButtonText}>Send Feedback</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 32,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 12,
+  },
+  categoryGrid: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  categoryButton: {
+    flex: 1,
+    padding: 12,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+  },
+  categoryButtonActive: {
+    borderColor: '#2563eb',
+    backgroundColor: '#eff6ff',
+  },
+  categoryEmoji: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  categoryText: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  categoryTextActive: {
+    color: '#2563eb',
+  },
+  textArea: {
+    minHeight: 200,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#111827',
+  },
+  submitButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+  },
+  submitButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

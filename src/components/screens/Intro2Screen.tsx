@@ -1,52 +1,135 @@
-import { useNavigate } from 'react-router-dom';
-import { Button } from '../ui/button';
-import { Smile } from 'lucide-react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Intro2Screen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
 
   return (
-    <div className="h-screen w-full bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 flex flex-col">
-      <div className="flex justify-end p-8">
-        <button
-          onClick={() => navigate('/signup')}
-          className="text-gray-900 hover:text-gray-600 transition-colors"
-        >
-          Skip
-        </button>
-      </div>
+    <LinearGradient
+      colors={['#eff6ff', '#f3e8ff', '#f0fdf4']}
+      style={styles.container}
+    >
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
+      </View>
 
-      <div className="flex-1 flex flex-col items-center justify-center px-8 pb-16">
-        <div className="relative w-64 h-64 mb-12">
-          <div className="absolute inset-0 bg-green-300/30 rounded-full blur-[32px]" />
-          <div className="relative bg-white/70 backdrop-blur-sm border border-white/40 rounded-2xl w-full h-full flex items-center justify-center shadow-lg">
-            <Smile className="w-20 h-20 text-green-400" strokeWidth={1.5} />
-          </div>
-        </div>
+      <View style={styles.content}>
+        <View style={styles.iconContainer}>
+          <View style={styles.iconCard}>
+            <Ionicons name="happy" size={80} color="#4ade80" />
+          </View>
+        </View>
 
-        <h2 className="text-gray-800 text-center mb-4 max-w-xs">
+        <Text style={styles.title}>
           Do it often, before it feels easy
-        </h2>
+        </Text>
         
-        <p className="text-gray-500 text-center max-w-sm">
+        <Text style={styles.description}>
           Repeated exposure to small social situations builds lasting confidence over time.
-        </p>
-      </div>
+        </Text>
+      </View>
 
-      <div className="px-8 pb-12">
-        <div className="flex items-center justify-center gap-2 mb-8">
-          <div className="w-2 h-2 bg-gray-300 rounded-full" />
-          <div className="w-8 h-2 bg-blue-600 rounded-full" />
-          <div className="w-2 h-2 bg-gray-300 rounded-full" />
-        </div>
+      <View style={styles.footer}>
+        <View style={styles.pagination}>
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.dotActive]} />
+          <View style={styles.dot} />
+        </View>
 
-        <Button 
-          onClick={() => navigate('/intro3')}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-full h-12"
+        <TouchableOpacity 
+          style={styles.button}
+          onPress={() => navigation.navigate('Intro3')}
         >
-          Continue
-        </Button>
-      </div>
-    </div>
+          <Text style={styles.buttonText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    </LinearGradient>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    alignItems: 'flex-end',
+    padding: 32,
+  },
+  skipText: {
+    color: '#111827',
+    fontSize: 16,
+  },
+  content: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    paddingBottom: 64,
+  },
+  iconContainer: {
+    width: 256,
+    height: 256,
+    marginBottom: 48,
+  },
+  iconCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 16,
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#1f2937',
+    textAlign: 'center',
+    marginBottom: 16,
+    maxWidth: 320,
+  },
+  description: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    maxWidth: 384,
+  },
+  footer: {
+    paddingHorizontal: 32,
+    paddingBottom: 48,
+  },
+  pagination: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 32,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#d1d5db',
+  },
+  dotActive: {
+    width: 32,
+    backgroundColor: '#2563eb',
+  },
+  button: {
+    backgroundColor: '#2563eb',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

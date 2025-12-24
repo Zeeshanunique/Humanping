@@ -1,105 +1,317 @@
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { Calendar, TrendingUp, Star, ArrowLeft } from 'lucide-react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function WeeklyReviewScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { missions, streak } = useApp();
 
   const weekMissions = missions.filter(m => m.completed).slice(0, 5);
   const weeklyScore = weekMissions.length;
 
   return (
-    <div className="min-h-screen w-full bg-white">
-      <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-6 pb-12">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#faf5ff', '#fdf2f8']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
 
-        <div className="text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Star className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-gray-900 mb-2">Weekly Review</h1>
-          <p className="text-gray-500">Your progress this week</p>
-        </div>
-      </div>
-
-      <div className="px-6 pb-6 -mt-6">
-        <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-lg mb-6">
-          <div className="text-center mb-6">
-            <div className="text-5xl mb-2">{weeklyScore}</div>
-            <p className="text-gray-500">Missions completed</p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-2">🔥</div>
-              <div className="text-gray-900 text-xl mb-1">{streak}</div>
-              <div className="text-gray-500 text-sm">Day Streak</div>
-            </div>
-
-            <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-4 text-center">
-              <div className="text-2xl mb-2">⭐</div>
-              <div className="text-gray-900 text-xl mb-1">85%</div>
-              <div className="text-gray-500 text-sm">Success Rate</div>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4 mb-6">
-          <h3 className="text-gray-900">This Week's Missions</h3>
-
-          {weekMissions.map((mission) => (
-            <div
-              key={mission.id}
-              className="bg-white border border-gray-200 rounded-xl p-4"
+          <View style={styles.headerContent}>
+            <LinearGradient
+              colors={['#9333ea', '#ec4899']}
+              style={styles.iconContainer}
             >
-              <div className="flex items-start gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-lg">✓</span>
-                </div>
-                <div className="flex-1">
-                  <div className="text-gray-900 mb-1">{mission.title}</div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs text-gray-500">{mission.date}</span>
+              <Ionicons name="star" size={40} color="#ffffff" />
+            </LinearGradient>
+            <Text style={styles.title}>Weekly Review</Text>
+            <Text style={styles.subtitle}>Your progress this week</Text>
+          </View>
+        </LinearGradient>
+
+        <View style={styles.content}>
+          <View style={styles.statsCard}>
+            <Text style={styles.statsNumber}>{weeklyScore}</Text>
+            <Text style={styles.statsLabel}>Missions completed</Text>
+
+            <View style={styles.statsGrid}>
+              <LinearGradient
+                colors={['#fff7ed', '#fee2e2']}
+                style={styles.statCard}
+              >
+                <Text style={styles.statEmoji}>🔥</Text>
+                <Text style={styles.statNumber}>{streak}</Text>
+                <Text style={styles.statLabel}>Day Streak</Text>
+              </LinearGradient>
+
+              <LinearGradient
+                colors={['#eff6ff', '#f3e8ff']}
+                style={styles.statCard}
+              >
+                <Text style={styles.statEmoji}>⭐</Text>
+                <Text style={styles.statNumber}>85%</Text>
+                <Text style={styles.statLabel}>Success Rate</Text>
+              </LinearGradient>
+            </View>
+          </View>
+
+          <Text style={styles.sectionTitle}>This Week's Missions</Text>
+
+          <View style={styles.missionsList}>
+            {weekMissions.map((mission) => (
+              <View key={mission.id} style={styles.missionCard}>
+                <View style={styles.missionIcon}>
+                  <Text style={styles.checkmark}>✓</Text>
+                </View>
+                <View style={styles.missionContent}>
+                  <Text style={styles.missionTitle}>{mission.title}</Text>
+                  <View style={styles.missionMeta}>
+                    <Text style={styles.missionDate}>{mission.date}</Text>
                     {mission.postFeeling && (
-                      <span className="px-2 py-0.5 bg-green-50 text-green-700 rounded-full text-xs">
-                        Felt {mission.postFeeling}
-                      </span>
+                      <View style={styles.feelingBadge}>
+                        <Text style={styles.feelingText}>
+                          Felt {mission.postFeeling}
+                        </Text>
+                      </View>
                     )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+                  </View>
+                </View>
+              </View>
+            ))}
+          </View>
 
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-6 mb-6">
-          <div className="flex items-center gap-3 mb-3">
-            <TrendingUp className="w-6 h-6 text-purple-600" />
-            <h3 className="text-gray-900">Progress Insights</h3>
-          </div>
-          <p className="text-gray-700 mb-3">
-            You completed {weeklyScore} missions this week! That's amazing progress. 
-            {weeklyScore >= 5 ? " You're on fire! 🔥" : " Keep up the great work!"}
-          </p>
-          <p className="text-gray-600 text-sm">
-            Remember: consistency is more important than perfection. Every mission builds your confidence.
-          </p>
-        </div>
+          <LinearGradient
+            colors={['#faf5ff', '#fdf2f8']}
+            style={styles.insightsCard}
+          >
+            <View style={styles.insightsHeader}>
+              <Ionicons name="trending-up" size={24} color="#9333ea" />
+              <Text style={styles.insightsTitle}>Progress Insights</Text>
+            </View>
+            <Text style={styles.insightsText}>
+              You completed {weeklyScore} missions this week! That's amazing progress. 
+              {weeklyScore >= 5 ? " You're on fire! 🔥" : " Keep up the great work!"}
+            </Text>
+            <Text style={styles.insightsSubtext}>
+              Remember: consistency is more important than perfection. Every mission builds your confidence.
+            </Text>
+          </LinearGradient>
 
-        <Button
-          onClick={() => navigate('/home')}
-          className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-full h-12"
-        >
-          Continue Your Journey
-        </Button>
-      </div>
-    </div>
+          <TouchableOpacity 
+            style={styles.continueButton}
+            onPress={() => navigation.navigate('HomeTab')}
+          >
+            <LinearGradient
+              colors={['#9333ea', '#ec4899']}
+              style={styles.continueButtonGradient}
+            >
+              <Text style={styles.continueButtonText}>Continue Your Journey</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 48,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  headerContent: {
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+    marginTop: -24,
+  },
+  statsCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 16,
+    padding: 24,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
+  },
+  statsNumber: {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: '#111827',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  statsLabel: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginBottom: 24,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  statCard: {
+    flex: 1,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  statEmoji: {
+    fontSize: 24,
+    marginBottom: 8,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  missionsList: {
+    gap: 12,
+    marginBottom: 24,
+  },
+  missionCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    gap: 12,
+  },
+  missionIcon: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#dcfce7',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkmark: {
+    fontSize: 18,
+    color: '#16a34a',
+  },
+  missionContent: {
+    flex: 1,
+  },
+  missionTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  missionMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  missionDate: {
+    fontSize: 12,
+    color: '#6b7280',
+  },
+  feelingBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    backgroundColor: '#dcfce7',
+    borderRadius: 12,
+  },
+  feelingText: {
+    fontSize: 12,
+    color: '#15803d',
+  },
+  insightsCard: {
+    borderRadius: 12,
+    padding: 24,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#e9d5ff',
+  },
+  insightsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 12,
+  },
+  insightsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  insightsText: {
+    fontSize: 16,
+    color: '#374151',
+    marginBottom: 12,
+  },
+  insightsSubtext: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  continueButton: {
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  continueButtonGradient: {
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  continueButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+});

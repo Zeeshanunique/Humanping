@@ -1,113 +1,280 @@
-import { useNavigate } from 'react-router-dom';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
-import { Button } from '../ui/button';
-import { ArrowLeft, Award, Target, Calendar, Mail } from 'lucide-react';
-import BottomNavigation from '../BottomNavigation';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
-  const navigate = useNavigate();
+  const navigation = useNavigation<any>();
   const { user, streak, missions } = useApp();
 
   const completedMissions = missions.filter(m => m.completed).length;
   const joinDate = user?.joinDate ? new Date(user.joinDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'November 2024';
 
   return (
-    <div className="min-h-screen w-full bg-white pb-20">
-      <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-6 pb-12">
-        <button
-          onClick={() => navigate(-1)}
-          className="text-gray-900 mb-6"
+    <View style={styles.container}>
+      <ScrollView style={styles.scrollView}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
         >
-          <ArrowLeft className="w-6 h-6" />
-        </button>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
 
-        <div className="flex flex-col items-center">
-          <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white mb-4">
-            <span className="text-3xl">{user?.name.charAt(0) || 'A'}</span>
-          </div>
-          <h2 className="text-gray-900 mb-1">{user?.name || 'Alex Johnson'}</h2>
-          <p className="text-gray-500 text-sm mb-4">{user?.email || 'alex@example.com'}</p>
-          
-          <div className="flex items-center gap-2 text-gray-500 text-sm">
-            <Calendar className="w-4 h-4" />
-            <span>Joined {joinDate}</span>
-          </div>
-        </div>
-      </div>
+          <View style={styles.profileInfo}>
+            <LinearGradient
+              colors={['#3b82f6', '#9333ea']}
+              style={styles.avatar}
+            >
+              <Text style={styles.avatarText}>
+                {user?.name?.charAt(0) || 'A'}
+              </Text>
+            </LinearGradient>
+            <Text style={styles.name}>{user?.name || 'Alex Johnson'}</Text>
+            <Text style={styles.email}>{user?.email || 'alex@example.com'}</Text>
+            
+            <View style={styles.joinDate}>
+              <Ionicons name="calendar" size={16} color="#6b7280" />
+              <Text style={styles.joinDateText}>Joined {joinDate}</Text>
+            </View>
+          </View>
+        </LinearGradient>
 
-      <div className="px-6 pb-6">
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
-              <span className="text-xl">🔥</span>
-            </div>
-            <div className="text-gray-900 text-xl mb-1">{streak}</div>
-            <div className="text-gray-500 text-xs">Day Streak</div>
-          </div>
+        <View style={styles.content}>
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#fed7aa' }]}>
+                <Text style={styles.statEmoji}>🔥</Text>
+              </View>
+              <Text style={styles.statNumber}>{streak}</Text>
+              <Text style={styles.statLabel}>Day Streak</Text>
+            </View>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-              <Target className="w-5 h-5 text-blue-600" />
-            </div>
-            <div className="text-gray-900 text-xl mb-1">{completedMissions}</div>
-            <div className="text-gray-500 text-xs">Completed</div>
-          </div>
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#dbeafe' }]}>
+                <Ionicons name="radio-button-on" size={20} color="#2563eb" />
+              </View>
+              <Text style={styles.statNumber}>{completedMissions}</Text>
+              <Text style={styles.statLabel}>Completed</Text>
+            </View>
 
-          <div className="bg-white border border-gray-200 rounded-xl p-4 text-center">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-              <Award className="w-5 h-5 text-purple-600" />
-            </div>
-            <div className="text-gray-900 text-xl mb-1">12</div>
-            <div className="text-gray-500 text-xs">Badges</div>
-          </div>
-        </div>
+            <View style={styles.statCard}>
+              <View style={[styles.statIcon, { backgroundColor: '#f3e8ff' }]}>
+                <Ionicons name="ribbon" size={20} color="#9333ea" />
+              </View>
+              <Text style={styles.statNumber}>12</Text>
+              <Text style={styles.statLabel}>Badges</Text>
+            </View>
+          </View>
 
-        <div className="space-y-4 mb-8">
-          <h3 className="text-gray-900">Recent Achievements</h3>
-          
-          <div className="space-y-3">
-            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-orange-200 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <span className="text-2xl">🏆</span>
-              </div>
-              <div>
-                <div className="text-gray-900">5 Day Streak</div>
-                <div className="text-gray-500 text-sm">Keep it up!</div>
-              </div>
-            </div>
+          <View style={styles.achievements}>
+            <Text style={styles.achievementsTitle}>Recent Achievements</Text>
+            
+            <View style={styles.achievementsList}>
+              <LinearGradient
+                colors={['#fef3c7', '#fed7aa']}
+                style={styles.achievementCard}
+              >
+                <View style={styles.achievementIcon}>
+                  <Text style={styles.achievementEmoji}>🏆</Text>
+                </View>
+                <View style={styles.achievementText}>
+                  <Text style={styles.achievementTitle}>5 Day Streak</Text>
+                  <Text style={styles.achievementSubtitle}>Keep it up!</Text>
+                </View>
+              </LinearGradient>
 
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <span className="text-2xl">⭐</span>
-              </div>
-              <div>
-                <div className="text-gray-900">First Mission</div>
-                <div className="text-gray-500 text-sm">Completed your first mission</div>
-              </div>
-            </div>
+              <LinearGradient
+                colors={['#dbeafe', '#f3e8ff']}
+                style={styles.achievementCard}
+              >
+                <View style={styles.achievementIcon}>
+                  <Text style={styles.achievementEmoji}>⭐</Text>
+                </View>
+                <View style={styles.achievementText}>
+                  <Text style={styles.achievementTitle}>First Mission</Text>
+                  <Text style={styles.achievementSubtitle}>Completed your first mission</Text>
+                </View>
+              </LinearGradient>
 
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                <span className="text-2xl">💪</span>
-              </div>
-              <div>
-                <div className="text-gray-900">Social Butterfly</div>
-                <div className="text-gray-500 text-sm">10 missions completed</div>
-              </div>
-            </div>
-          </div>
-        </div>
+              <LinearGradient
+                colors={['#d1fae5', '#a7f3d0']}
+                style={styles.achievementCard}
+              >
+                <View style={styles.achievementIcon}>
+                  <Text style={styles.achievementEmoji}>💪</Text>
+                </View>
+                <View style={styles.achievementText}>
+                  <Text style={styles.achievementTitle}>Social Butterfly</Text>
+                  <Text style={styles.achievementSubtitle}>10 missions completed</Text>
+                </View>
+              </LinearGradient>
+            </View>
+          </View>
 
-        <Button
-          onClick={() => navigate('/settings')}
-          variant="outline"
-          className="w-full rounded-full h-12 border-gray-300"
-        >
-          Edit Profile
-        </Button>
-      </div>
-
-      <BottomNavigation />
-    </div>
+          <TouchableOpacity 
+            style={styles.editButton}
+            onPress={() => navigation.navigate('Settings')}
+          >
+            <Text style={styles.editButtonText}>Edit Profile</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 48,
+  },
+  backButton: {
+    marginBottom: 24,
+  },
+  profileInfo: {
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  avatarText: {
+    fontSize: 40,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  name: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  email: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 16,
+  },
+  joinDate: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  joinDateText: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  content: {
+    paddingHorizontal: 24,
+    paddingBottom: 24,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    gap: 16,
+    marginBottom: 32,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+  },
+  statIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  statEmoji: {
+    fontSize: 20,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 10,
+    color: '#6b7280',
+  },
+  achievements: {
+    marginBottom: 32,
+  },
+  achievementsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 16,
+  },
+  achievementsList: {
+    gap: 12,
+  },
+  achievementCard: {
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  achievementIcon: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#ffffff',
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  achievementEmoji: {
+    fontSize: 24,
+  },
+  achievementText: {
+    flex: 1,
+  },
+  achievementTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#111827',
+    marginBottom: 2,
+  },
+  achievementSubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+  },
+  editButton: {
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+    borderRadius: 24,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+  },
+});
