@@ -27,7 +27,11 @@ export default function LoginScreen() {
     >
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={{ padding: 8, marginLeft: -8, alignSelf: 'flex-start' }}
+          >
             <Ionicons name="arrow-back" size={24} color="#111827" />
           </TouchableOpacity>
         </View>

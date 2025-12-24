@@ -3,7 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function Intro2Screen() {
+export default function Intro4Screen() {
   const navigation = useNavigation<any>();
 
   return (
@@ -15,39 +15,37 @@ export default function Intro2Screen() {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.backText}>Back</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
       </View>
 
       <View style={styles.content}>
         <View style={styles.iconContainer}>
           <View style={styles.iconCard}>
-            <Ionicons name="happy" size={80} color="#4ade80" />
+            <Ionicons name="trending-up" size={80} color="#9333ea" />
           </View>
         </View>
 
         <Text style={styles.title}>
-          Do it offline. Reflect in{'\n'}seconds.
+          Small actions build{'\n'}confidence
         </Text>
         
         <Text style={styles.description}>
-          Complete it in real life, then tap done.{'\n'}No feeds, no pressure.
+          Feel more connected to the world{'\n'}around you, without anxiety.
         </Text>
       </View>
 
       <View style={styles.footer}>
         <View style={styles.pagination}>
           <View style={styles.dot} />
-          <View style={[styles.dot, styles.dotActive]} />
           <View style={styles.dot} />
+          <View style={styles.dot} />
+          <View style={[styles.dot, styles.dotActive]} />
         </View>
 
         <TouchableOpacity 
           style={styles.button}
-          onPress={() => navigation.navigate('Intro4')}
+          onPress={() => navigation.navigate('SignUp')}
         >
-          <Text style={styles.buttonText}>Continue</Text>
+          <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
       </View>
     </LinearGradient>
@@ -59,16 +57,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     padding: 32,
+    paddingTop: 48,
   },
   backText: {
-    color: '#111827',
-    fontSize: 16,
-  },
-  skipText: {
     color: '#111827',
     fontSize: 16,
   },
@@ -142,3 +135,4 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+

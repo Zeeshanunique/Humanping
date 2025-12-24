@@ -38,84 +38,57 @@ export default function TodaysMissionScreen() {
           <TouchableOpacity 
             onPress={() => navigation.goBack()}
             style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons name="arrow-back" size={24} color="#111827" />
           </TouchableOpacity>
 
           <View style={styles.headerContent}>
-            <LinearGradient
-              colors={['#3b82f6', '#9333ea']}
-              style={styles.iconContainer}
-            >
-              <Ionicons name="radio-button-on" size={32} color="#ffffff" />
-            </LinearGradient>
-            <Text style={styles.title}>Today's Mission</Text>
-            <Text style={styles.subtitle}>A small step toward big confidence</Text>
+            <View style={styles.dailyChallengeBadge}>
+              <Text style={styles.dailyChallengeText}>Daily Challenge</Text>
+            </View>
+            <Text style={styles.title}>Today's HumanPing</Text>
           </View>
         </LinearGradient>
 
         <View style={styles.content}>
           <View style={styles.missionCard}>
-            <View style={styles.badges}>
-              <View style={[styles.badge, { backgroundColor: difficultyColors.bg }]}>
-                <Text style={[styles.badgeText, { color: difficultyColors.text }]}>
-                  {todaysMission.difficulty}
-                </Text>
-              </View>
-              <View style={[styles.badge, { backgroundColor: '#dbeafe' }]}>
-                <Text style={[styles.badgeText, { color: '#1e40af' }]}>
-                  {todaysMission.category}
-                </Text>
-              </View>
-            </View>
-
-            <Text style={styles.missionTitle}>{todaysMission.title}</Text>
-            <Text style={styles.missionDescription}>{todaysMission.description}</Text>
-
-            <View style={styles.infoSection}>
-              <View style={styles.infoItem}>
-                <View style={[styles.infoIcon, { backgroundColor: '#dbeafe' }]}>
-                  <Ionicons name="time" size={16} color="#2563eb" />
-                </View>
-                <View>
-                  <Text style={styles.infoLabel}>Estimated time</Text>
-                  <Text style={styles.infoValue}>5-10 minutes</Text>
-                </View>
-              </View>
-
-              <View style={styles.infoItem}>
-                <View style={[styles.infoIcon, { backgroundColor: '#f3e8ff' }]}>
-                  <Ionicons name="star" size={16} color="#9333ea" />
-                </View>
-                <View>
-                  <Text style={styles.infoLabel}>Reward</Text>
-                  <Text style={styles.infoValue}>+10 confidence points</Text>
-                </View>
-              </View>
-            </View>
-
-            <TouchableOpacity 
-              style={styles.startButton}
-              onPress={handleStartMission}
-            >
-              <LinearGradient
-                colors={['#2563eb', '#9333ea']}
-                style={styles.startButtonGradient}
-              >
-                <Text style={styles.startButtonText}>Start Mission</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.tipCard}>
-            <Text style={styles.tipEmoji}>💡</Text>
-            <View style={styles.tipContent}>
-              <Text style={styles.tipTitle}>Tip</Text>
-              <Text style={styles.tipText}>
-                Take your time and remember - it's okay to feel nervous. That's part of the growth!
+            <View style={styles.missionQuoteContainer}>
+              <Text style={styles.missionQuote}>
+                "{todaysMission.title}"
               </Text>
             </View>
+
+            <View style={styles.badgesRow}>
+              <View style={styles.badgeContainer}>
+                <Ionicons name="checkmark-circle" size={12} color="#15803d" />
+                <Text style={styles.badgeText}>Safe</Text>
+              </View>
+              <View style={styles.badgeContainer}>
+                <Ionicons name="location" size={12} color="#2563eb" />
+                <Text style={styles.badgeText}>Anywhere</Text>
+              </View>
+            </View>
           </View>
+
+          <View style={styles.whySection}>
+            <Text style={styles.whyTitle}>Why this helps</Text>
+            <Text style={styles.whyText}>
+              Small, low-stakes interactions help retrain your brain that social connection is safe and rewarding.
+            </Text>
+          </View>
+
+          <TouchableOpacity 
+            style={styles.startButton}
+            onPress={handleStartMission}
+          >
+            <LinearGradient
+              colors={['#2563eb', '#9333ea']}
+              style={styles.startButtonGradient}
+            >
+              <Text style={styles.startButtonText}>Start Mission</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -137,27 +110,30 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginBottom: 24,
+    padding: 8,
+    marginLeft: -8,
+    alignSelf: 'flex-start',
   },
   headerContent: {
     alignItems: 'center',
+    marginTop: 24,
   },
-  iconContainer: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+  dailyChallengeBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 12,
     marginBottom: 16,
   },
+  dailyChallengeText: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+  },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#111827',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#6b7280',
   },
   content: {
     paddingHorizontal: 24,
@@ -177,62 +153,60 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 4,
   },
-  badges: {
-    flexDirection: 'row',
-    gap: 8,
+  missionQuoteContainer: {
     marginBottom: 16,
   },
-  badge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  badgeText: {
-    fontSize: 12,
+  missionQuote: {
+    fontSize: 20,
     fontWeight: '500',
-  },
-  missionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
     color: '#111827',
-    marginBottom: 12,
+    textAlign: 'center',
+    lineHeight: 28,
   },
-  missionDescription: {
-    fontSize: 16,
-    color: '#374151',
-    marginBottom: 24,
+  badgesRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 16,
+    marginTop: 8,
   },
-  infoSection: {
-    gap: 12,
-    marginBottom: 24,
-  },
-  infoItem: {
+  badgeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-  },
-  infoIcon: {
-    width: 32,
-    height: 32,
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#f3f4f6',
     borderRadius: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  infoLabel: {
+  badgeText: {
     fontSize: 14,
+    fontWeight: '500',
     color: '#374151',
-    marginBottom: 2,
   },
-  infoValue: {
-    fontSize: 12,
+  whySection: {
+    backgroundColor: '#f9fafb',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+  },
+  whyTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  whyText: {
+    fontSize: 14,
     color: '#6b7280',
+    lineHeight: 20,
   },
   startButton: {
     borderRadius: 24,
     overflow: 'hidden',
+    marginTop: 8,
   },
   startButtonGradient: {
-    height: 48,
+    height: 56,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -240,30 +214,5 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
-  },
-  tipCard: {
-    backgroundColor: '#eff6ff',
-    borderWidth: 1,
-    borderColor: '#bfdbfe',
-    borderRadius: 12,
-    padding: 16,
-    flexDirection: 'row',
-    gap: 12,
-  },
-  tipEmoji: {
-    fontSize: 24,
-  },
-  tipContent: {
-    flex: 1,
-  },
-  tipTitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  tipText: {
-    fontSize: 14,
-    color: '#374151',
   },
 });

@@ -10,10 +10,15 @@ export default function SignUpScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleSignUp = () => {
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
       return;
     }
     signup(name, email, password);
@@ -28,7 +33,11 @@ export default function SignUpScreen() {
     >
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={{ padding: 8, marginLeft: -8, alignSelf: 'flex-start' }}
+          >
             <Ionicons name="arrow-back" size={24} color="#111827" />
           </TouchableOpacity>
         </View>
@@ -37,7 +46,7 @@ export default function SignUpScreen() {
           <View style={styles.titleContainer}>
             <Text style={styles.title}>Create Account</Text>
             <Text style={styles.subtitle}>
-              Start your journey to build social confidence
+              Start your journey to better connection
             </Text>
           </View>
 
@@ -72,7 +81,7 @@ export default function SignUpScreen() {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Password</Text>
+              <Text style={styles.label}>Create Password</Text>
               <View style={styles.inputWrapper}>
                 <Ionicons name="lock-closed" size={20} color="#9ca3af" style={styles.inputIcon} />
                 <TextInput
@@ -80,6 +89,20 @@ export default function SignUpScreen() {
                   placeholder="Create a password"
                   value={password}
                   onChangeText={setPassword}
+                  secureTextEntry
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Confirm Password</Text>
+              <View style={styles.inputWrapper}>
+                <Ionicons name="lock-closed" size={20} color="#9ca3af" style={styles.inputIcon} />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChangeText={setConfirmPassword}
                   secureTextEntry
                 />
               </View>

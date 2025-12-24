@@ -12,6 +12,17 @@ export default function HomeDashboard() {
 
   const completedMissions = missions.filter(m => m.completed).length;
   const todaysMission = missions.find(m => !m.completed);
+  const lastMission = missions.filter(m => m.completed).sort((a, b) => {
+    const dateA = a.date ? new Date(a.date).getTime() : 0;
+    const dateB = b.date ? new Date(b.date).getTime() : 0;
+    return dateB - dateA;
+  })[0];
+
+  const getFormattedDate = () => {
+    const today = new Date();
+    const options: Intl.DateTimeFormatOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+    return today.toLocaleDateString('en-US', options);
+  };
 
   return (
     <View style={styles.container}>
@@ -21,13 +32,18 @@ export default function HomeDashboard() {
           style={styles.headerGradient}
         >
           <View style={styles.topBar}>
-            <TouchableOpacity onPress={() => setMenuOpen(true)}>
+            <TouchableOpacity 
+              onPress={() => setMenuOpen(true)}
+              style={styles.menuButton}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            >
               <Ionicons name="menu" size={24} color="#111827" />
             </TouchableOpacity>
 
             <TouchableOpacity 
               onPress={() => navigation.navigate('Notifications')}
               style={styles.notificationButton}
+              hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
               <Ionicons name="notifications" size={24} color="#111827" />
               <View style={styles.notificationDot} />
@@ -35,30 +51,10 @@ export default function HomeDashboard() {
           </View>
 
           <View style={styles.greeting}>
+            <Text style={styles.dateText}>{getFormattedDate()}</Text>
             <Text style={styles.greetingText}>
-              Hello, {user?.name?.split(' ')[0] || 'Alex'}! 👋
+              Hello, {user?.name?.split(' ')[0] || 'Alex'}
             </Text>
-            <Text style={styles.greetingSubtext}>Ready to grow today?</Text>
-          </View>
-
-          <View style={styles.statsCard}>
-            <View style={styles.statsRow}>
-              <View style={styles.statItem}>
-                <View style={styles.streakContainer}>
-                  <View style={styles.fireIcon}>
-                    <Text style={styles.fireEmoji}>🔥</Text>
-                  </View>
-                  <View>
-                    <Text style={styles.statNumber}>{streak}</Text>
-                    <Text style={styles.statLabel}>Day streak</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.statItemRight}>
-                <Text style={styles.statNumber}>{completedMissions}</Text>
-                <Text style={styles.statLabel}>Missions done</Text>
-              </View>
-            </View>
           </View>
         </LinearGradient>
 
@@ -68,54 +64,57 @@ export default function HomeDashboard() {
             style={styles.missionCard}
           >
             <View style={styles.missionHeader}>
-              <View style={styles.missionIconContainer}>
-                <Ionicons name="radio-button-on" size={20} color="#ffffff" />
+              <View style={styles.missionLabels}>
+                <Text style={styles.missionLabel}>Daily Mission</Text>
+                <Text style={styles.missionStatus}>Ready for you</Text>
               </View>
               <View style={styles.missionTextContainer}>
-                <Text style={styles.missionLabel}>Today's Mission</Text>
                 <Text style={styles.missionTitle}>
-                  {todaysMission?.title || 'Complete your daily mission'}
+                  Today's mission is ready
                 </Text>
                 <Text style={styles.missionDescription}>
-                  {todaysMission?.description || 'Start a new mission to build confidence'}
+                  A small action to build connection and confidence.
                 </Text>
               </View>
-            </View>
 
-            <TouchableOpacity 
-              style={styles.startButton}
-              onPress={() => navigation.navigate('TodaysMission')}
-            >
-              <Text style={styles.startButtonText}>Start Mission</Text>
-            </TouchableOpacity>
+              <TouchableOpacity 
+                style={styles.startButton}
+                onPress={() => navigation.navigate('TodaysMission')}
+              >
+                <Text style={styles.startButtonText}>View Today's Mission</Text>
+                <Ionicons name="chevron-forward" size={16} color="#ffffff" />
+              </TouchableOpacity>
+            </View>
           </LinearGradient>
 
-          <View style={styles.quickActions}>
-            <Text style={styles.quickActionsTitle}>Quick Actions</Text>
-            
-            <View style={styles.actionsGrid}>
-              <TouchableOpacity 
-                style={styles.actionCard}
-                onPress={() => navigation.navigate('HistoryTab', { screen: 'History', params: { period: 'week' } })}
-              >
-                <View style={[styles.actionIcon, { backgroundColor: '#f3e8ff' }]}>
-                  <Ionicons name="calendar" size={20} color="#9333ea" />
-                </View>
-                <Text style={styles.actionTitle}>History</Text>
-                <Text style={styles.actionSubtitle}>View progress</Text>
-              </TouchableOpacity>
+          <View style={styles.encouragementText}>
+            <Text style={styles.encouragementTextContent}>
+              You're building a habit. Keep going.
+            </Text>
+          </View>
 
-              <TouchableOpacity 
-                style={styles.actionCard}
-                onPress={() => navigation.navigate('Streaks')}
-              >
-                <View style={[styles.actionIcon, { backgroundColor: '#fed7aa' }]}>
-                  <Ionicons name="trending-up" size={20} color="#ea580c" />
-                </View>
-                <Text style={styles.actionTitle}>Streaks</Text>
-                <Text style={styles.actionSubtitle}>{streak} days</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.statsGrid}>
+            <TouchableOpacity 
+              style={styles.statCard}
+              onPress={() => navigation.navigate('MissionsCompleted')}
+            >
+              <View style={styles.statIconContainer}>
+                <Ionicons name="checkmark-circle" size={20} color="#2563eb" />
+              </View>
+              <Text style={styles.statNumber}>{completedMissions}</Text>
+              <Text style={styles.statLabel}>Missions completed</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.statCard}
+              onPress={() => navigation.navigate('HistoryTab', { screen: 'History', params: { period: 'all' } })}
+            >
+              <View style={styles.statIconContainer}>
+                <Ionicons name="time" size={20} color="#9333ea" />
+              </View>
+              <Text style={styles.statNumber}>Last</Text>
+              <Text style={styles.statLabel}>View history</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
@@ -128,13 +127,15 @@ export default function HomeDashboard() {
         onRequestClose={() => setMenuOpen(false)}
       >
         <View style={styles.modalOverlay}>
-          <TouchableOpacity 
-            style={styles.modalBackdrop}
-            activeOpacity={1}
-            onPress={() => setMenuOpen(false)}
-          />
           <View style={styles.drawerContent}>
             <View style={styles.drawerHeader}>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setMenuOpen(false)}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Ionicons name="close" size={24} color="#111827" />
+              </TouchableOpacity>
               <LinearGradient
                 colors={['#3b82f6', '#9333ea']}
                 style={styles.avatar}
@@ -189,6 +190,11 @@ export default function HomeDashboard() {
               </TouchableOpacity>
             </View>
           </View>
+          <TouchableOpacity 
+            style={styles.modalBackdrop}
+            activeOpacity={1}
+            onPress={() => setMenuOpen(false)}
+          />
         </View>
       </Modal>
     </View>
@@ -216,8 +222,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 32,
   },
+  menuButton: {
+    padding: 8,
+    marginLeft: -8,
+  },
   notificationButton: {
     position: 'relative',
+    padding: 8,
+    marginRight: -8,
   },
   notificationDot: {
     position: 'absolute',
@@ -231,52 +243,112 @@ const styles = StyleSheet.create({
   greeting: {
     marginBottom: 24,
   },
+  dateText: {
+    fontSize: 14,
+    color: '#6b7280',
+    marginBottom: 4,
+  },
   greetingText: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#111827',
-    marginBottom: 4,
   },
-  greetingSubtext: {
-    fontSize: 16,
-    color: '#6b7280',
+  content: {
+    paddingHorizontal: 24,
+    marginTop: -80,
+    paddingBottom: 24,
   },
-  statsCard: {
-    backgroundColor: '#ffffff',
+  missionCard: {
     borderRadius: 16,
     padding: 24,
+    marginBottom: 16,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  statsRow: {
+  missionHeader: {
+    gap: 16,
+  },
+  missionLabels: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    gap: 8,
+    marginBottom: 4,
   },
-  statItem: {
-    flex: 1,
+  missionLabel: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
   },
-  streakContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  missionStatus: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
+    paddingHorizontal: 10,
+    paddingVertical: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+  },
+  missionTextContainer: {
     gap: 8,
   },
-  fireIcon: {
-    width: 48,
+  missionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#ffffff',
+  },
+  missionDescription: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    lineHeight: 20,
+  },
+  startButton: {
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
     height: 48,
-    backgroundColor: '#dbeafe',
-    borderRadius: 24,
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 8,
+    marginTop: 8,
   },
-  fireEmoji: {
-    fontSize: 24,
+  startButtonText: {
+    color: '#2563eb',
+    fontSize: 16,
+    fontWeight: '600',
   },
-  statItemRight: {
+  encouragementText: {
+    marginBottom: 16,
+    alignItems: 'center',
+  },
+  encouragementTextContent: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  statCard: {
     flex: 1,
-    alignItems: 'flex-end',
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 12,
+    padding: 16,
+  },
+  statIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
   },
   statNumber: {
     fontSize: 24,
@@ -288,118 +360,35 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#6b7280',
   },
-  content: {
-    paddingHorizontal: 24,
-    marginTop: -80,
-    paddingBottom: 24,
-  },
-  missionCard: {
-    borderRadius: 16,
-    padding: 24,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  missionHeader: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 16,
-  },
-  missionIconContainer: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  missionTextContainer: {
-    flex: 1,
-  },
-  missionLabel: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)',
-    marginBottom: 4,
-  },
-  missionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#ffffff',
-    marginBottom: 8,
-  },
-  missionDescription: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
-  },
-  startButton: {
-    backgroundColor: '#ffffff',
-    borderRadius: 24,
-    height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  startButtonText: {
-    color: '#2563eb',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  quickActions: {
-    gap: 16,
-  },
-  quickActionsTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-  },
-  actionsGrid: {
-    flexDirection: 'row',
-    gap: 16,
-  },
-  actionCard: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 12,
-    padding: 16,
-  },
-  actionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-  },
-  actionTitle: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#111827',
-    marginBottom: 4,
-  },
-  actionSubtitle: {
-    fontSize: 12,
-    color: '#6b7280',
-  },
   modalOverlay: {
     flex: 1,
     flexDirection: 'row',
-  },
-  modalBackdrop: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   drawerContent: {
     width: 320,
     backgroundColor: '#ffffff',
     paddingTop: 60,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 0 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   drawerHeader: {
     padding: 24,
     marginBottom: 32,
+    position: 'relative',
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 24,
+    right: 24,
+    padding: 4,
+    zIndex: 10,
   },
   avatar: {
     width: 64,

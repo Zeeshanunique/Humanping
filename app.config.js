@@ -28,7 +28,15 @@ export default {
     web: {
       favicon: "./assets/favicon.png"
     },
-    scheme: "humanping"
+    scheme: "humanping",
+    plugins: [
+      "expo-font"
+    ],
+    extra: {
+      eas: {
+        projectId: "ef326323-46db-40df-b5b4-cb3fde1dd338"
+      }
+    }
   }
 };
 

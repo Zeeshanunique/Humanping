@@ -1,58 +1,42 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { useApp } from '../AppContext';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function TaskStatusScreen() {
   const navigation = useNavigation<any>();
-
-  const tips = [
-    'Take slow, deep breaths',
-    'Remind yourself this is for growth',
-    'It\'s okay to feel nervous',
-    'You can do this!'
-  ];
+  const { currentMission } = useApp();
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={['#eff6ff', '#f3e8ff']}
-        style={styles.header}
-      >
+      <View style={styles.topBar}>
         <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
+          onPress={() => navigation.navigate('HomeTab')}
+          style={styles.backToHomeButton}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
         >
-          <Ionicons name="arrow-back" size={24} color="#111827" />
+          <Ionicons name="arrow-back" size={20} color="#111827" />
+          <Text style={styles.backToHomeText}>Back to Home</Text>
         </TouchableOpacity>
-
-        <Text style={styles.title}>Mission in Progress</Text>
-        <Text style={styles.subtitle}>Take your time</Text>
-      </LinearGradient>
+      </View>
 
       <View style={styles.content}>
-        <LinearGradient
-          colors={['#3b82f6', '#9333ea']}
-          style={styles.iconCircle}
-        >
-          <Ionicons name="time" size={64} color="#ffffff" />
-        </LinearGradient>
+        <View style={styles.iconContainer}>
+          <Text style={styles.waveEmoji}>👋</Text>
+        </View>
 
-        <Text style={styles.breathTitle}>Take a deep breath</Text>
-        <Text style={styles.breathText}>
-          When you're ready, go ahead and complete the mission. Remember, there's no rush - this is your journey.
+        <Text style={styles.title}>
+          Go do your{'\n'}HumanPing
+        </Text>
+        
+        <Text style={styles.subtitle}>
+          Take your time. Put your phone away.{'\n'}Come back when you're done.
         </Text>
 
-        <View style={styles.tipsCard}>
-          <Text style={styles.tipsTitle}>Tips while you wait:</Text>
-          <View style={styles.tipsList}>
-            {tips.map((tip, index) => (
-              <View key={index} style={styles.tipItem}>
-                <Text style={styles.tipBullet}>•</Text>
-                <Text style={styles.tipText}>{tip}</Text>
-              </View>
-            ))}
-          </View>
+        <View style={styles.missionReminder}>
+          <Text style={styles.missionText}>
+            "{currentMission?.title || 'Ask one person how their day is going.'}"
+          </Text>
         </View>
       </View>
 
@@ -61,8 +45,7 @@ export default function TaskStatusScreen() {
           style={styles.completeButton}
           onPress={() => navigation.navigate('PostTaskFeeling')}
         >
-          <Ionicons name="checkmark-circle" size={20} color="#ffffff" />
-          <Text style={styles.completeButtonText}>I Did It!</Text>
+          <Text style={styles.completeButtonText}>I've done it</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -74,23 +57,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
-  header: {
+  topBar: {
     paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 32,
+    paddingTop: 40,
+    paddingBottom: 16,
   },
-  backButton: {
-    marginBottom: 24,
+  backToHomeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 8,
+    marginLeft: -8,
+    alignSelf: 'flex-start',
   },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#111827',
-    marginBottom: 8,
-  },
-  subtitle: {
+  backToHomeText: {
     fontSize: 16,
-    color: '#6b7280',
+    color: '#111827',
+    fontWeight: '500',
   },
   content: {
     flex: 1,
@@ -99,75 +82,57 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 24,
   },
-  iconCircle: {
+  iconContainer: {
     width: 128,
     height: 128,
     borderRadius: 64,
+    backgroundColor: '#f3f4f6',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 32,
   },
-  breathTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  waveEmoji: {
+    fontSize: 48,
+  },
+  title: {
+    fontSize: 36,
+    fontWeight: 'bold',
     color: '#111827',
     textAlign: 'center',
     marginBottom: 16,
   },
-  breathText: {
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginBottom: 32,
+    lineHeight: 24,
+  },
+  missionReminder: {
+    backgroundColor: '#f9fafb',
+    borderRadius: 12,
+    padding: 24,
+    maxWidth: 320,
+    width: '100%',
+  },
+  missionText: {
     fontSize: 16,
     color: '#374151',
     textAlign: 'center',
-    marginBottom: 32,
-    maxWidth: 384,
-  },
-  tipsCard: {
-    backgroundColor: '#eff6ff',
-    borderWidth: 1,
-    borderColor: '#bfdbfe',
-    borderRadius: 12,
-    padding: 24,
-    maxWidth: 384,
-    width: '100%',
-  },
-  tipsTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111827',
-    marginBottom: 12,
-  },
-  tipsList: {
-    gap: 8,
-  },
-  tipItem: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  tipBullet: {
-    fontSize: 14,
-    color: '#374151',
-  },
-  tipText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#374151',
+    fontStyle: 'italic',
+    lineHeight: 24,
   },
   footer: {
     paddingHorizontal: 24,
     paddingBottom: 24,
     paddingTop: 16,
-    backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#e5e7eb',
   },
   completeButton: {
-    flexDirection: 'row',
+    backgroundColor: '#2563eb',
+    borderRadius: 12,
+    height: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    backgroundColor: '#16a34a',
-    borderRadius: 24,
-    height: 48,
   },
   completeButtonText: {
     color: '#ffffff',

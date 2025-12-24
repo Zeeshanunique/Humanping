@@ -21,6 +21,7 @@ export default function ProfileScreen() {
           <TouchableOpacity 
             onPress={() => navigation.goBack()}
             style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons name="arrow-back" size={24} color="#111827" />
           </TouchableOpacity>
@@ -116,6 +117,32 @@ export default function ProfileScreen() {
             </View>
           </View>
 
+          <View style={styles.accountSection}>
+            <Text style={styles.sectionTitle}>Account</Text>
+            
+            <TouchableOpacity 
+              style={styles.menuItem}
+              onPress={() => navigation.navigate('Notifications')}
+            >
+              <View style={styles.menuItemLeft}>
+                <Ionicons name="notifications-outline" size={20} color="#374151" />
+                <Text style={styles.menuItemText}>Notification Preferences</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.menuItem}
+              onPress={() => navigation.navigate('Settings')}
+            >
+              <View style={styles.menuItemLeft}>
+                <Ionicons name="settings-outline" size={20} color="#374151" />
+                <Text style={styles.menuItemText}>Settings</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+            </TouchableOpacity>
+          </View>
+
           <TouchableOpacity 
             style={styles.editButton}
             onPress={() => navigation.navigate('Settings')}
@@ -143,6 +170,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginBottom: 24,
+    padding: 8,
+    marginLeft: -8,
+    alignSelf: 'flex-start',
   },
   profileInfo: {
     alignItems: 'center',
@@ -263,6 +293,35 @@ const styles = StyleSheet.create({
   achievementSubtitle: {
     fontSize: 14,
     color: '#6b7280',
+  },
+  accountSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6b7280',
+    marginBottom: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 16,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f4f6',
+  },
+  menuItemLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  menuItemText: {
+    fontSize: 16,
+    color: '#111827',
   },
   editButton: {
     borderWidth: 1,

@@ -25,6 +25,7 @@ export default function SuggestionScreen() {
           <TouchableOpacity 
             onPress={() => navigation.goBack()}
             style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
           >
             <Ionicons name="arrow-back" size={24} color="#111827" />
           </TouchableOpacity>
@@ -112,6 +113,9 @@ const styles = StyleSheet.create({
   },
   backButton: {
     marginBottom: 24,
+    padding: 8,
+    marginLeft: -8,
+    alignSelf: 'flex-start',
   },
   headerContent: {
     flexDirection: 'row',

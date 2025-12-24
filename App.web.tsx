@@ -9,6 +9,7 @@ import SplashScreen from './src/components/screens/SplashScreen';
 import Intro1Screen from './src/components/screens/Intro1Screen';
 import Intro2Screen from './src/components/screens/Intro2Screen';
 import Intro3Screen from './src/components/screens/Intro3Screen';
+import Intro4Screen from './src/components/screens/Intro4Screen';
 import SignUpScreen from './src/components/screens/SignUpScreen';
 import LoginScreen from './src/components/screens/LoginScreen';
 import ForgotPasswordScreen from './src/components/screens/ForgotPasswordScreen';
@@ -28,6 +29,7 @@ import TaskStatusScreen from './src/components/screens/TaskStatusScreen';
 import PostTaskFeelingScreen from './src/components/screens/PostTaskFeelingScreen';
 import TaskCompletionScreen from './src/components/screens/TaskCompletionScreen';
 import WeeklyReviewScreen from './src/components/screens/WeeklyReviewScreen';
+import MissionsCompletedScreen from './src/components/screens/MissionsCompletedScreen';
 
 export default function App() {
   return (
@@ -41,6 +43,7 @@ export default function App() {
               <Route path="/intro1" element={<Intro1Screen />} />
               <Route path="/intro2" element={<Intro2Screen />} />
               <Route path="/intro3" element={<Intro3Screen />} />
+              <Route path="/intro4" element={<Intro4Screen />} />
               <Route path="/signup" element={<SignUpScreen />} />
               <Route path="/login" element={<LoginScreen />} />
               <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
@@ -60,6 +63,7 @@ export default function App() {
               <Route path="/post-task-feeling" element={<PostTaskFeelingScreen />} />
               <Route path="/task-completion" element={<TaskCompletionScreen />} />
               <Route path="/weekly-review" element={<WeeklyReviewScreen />} />
+              <Route path="/missions-completed" element={<MissionsCompletedScreen />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </div>

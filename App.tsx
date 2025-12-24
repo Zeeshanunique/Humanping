@@ -10,6 +10,7 @@ import SplashScreen from './src/components/screens/SplashScreen';
 import Intro1Screen from './src/components/screens/Intro1Screen';
 import Intro2Screen from './src/components/screens/Intro2Screen';
 import Intro3Screen from './src/components/screens/Intro3Screen';
+import Intro4Screen from './src/components/screens/Intro4Screen';
 import SignUpScreen from './src/components/screens/SignUpScreen';
 import LoginScreen from './src/components/screens/LoginScreen';
 import ForgotPasswordScreen from './src/components/screens/ForgotPasswordScreen';
@@ -29,6 +30,7 @@ import TaskStatusScreen from './src/components/screens/TaskStatusScreen';
 import PostTaskFeelingScreen from './src/components/screens/PostTaskFeelingScreen';
 import TaskCompletionScreen from './src/components/screens/TaskCompletionScreen';
 import WeeklyReviewScreen from './src/components/screens/WeeklyReviewScreen';
+import MissionsCompletedScreen from './src/components/screens/MissionsCompletedScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -100,6 +102,7 @@ export default function App() {
           <Stack.Screen name="Intro1" component={Intro1Screen} />
           <Stack.Screen name="Intro2" component={Intro2Screen} />
           <Stack.Screen name="Intro3" component={Intro3Screen} />
+          <Stack.Screen name="Intro4" component={Intro4Screen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
@@ -117,6 +120,7 @@ export default function App() {
           <Stack.Screen name="PostTaskFeeling" component={PostTaskFeelingScreen} />
           <Stack.Screen name="TaskCompletion" component={TaskCompletionScreen} />
           <Stack.Screen name="WeeklyReview" component={WeeklyReviewScreen} />
+          <Stack.Screen name="MissionsCompleted" component={MissionsCompletedScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppProvider>

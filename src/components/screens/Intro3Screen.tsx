@@ -17,20 +17,20 @@ export default function Intro3Screen() {
         </Text>
 
         <View style={styles.buttonContainer}>
-          <TouchableOpacity 
-            style={styles.primaryButton}
-            onPress={() => navigation.navigate('SignUp')}
-          >
-            <Ionicons name="checkmark-circle" size={20} color="#2563eb" />
-            <Text style={styles.primaryButtonText}>Get Started</Text>
-          </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.primaryButton}
+          onPress={() => navigation.navigate('Intro4')}
+        >
+          <Ionicons name="checkmark-circle" size={20} color="#2563eb" />
+          <Text style={styles.primaryButtonText}>Continue</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity 
-            style={styles.secondaryButton}
-            onPress={() => navigation.navigate('Login')}
-          >
-            <Text style={styles.secondaryButtonText}>I have an account</Text>
-          </TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.secondaryButton}
+          onPress={() => navigation.navigate('SignUp')}
+        >
+          <Text style={styles.secondaryButtonText}>Skip to Sign Up</Text>
+        </TouchableOpacity>
         </View>
 
         <Text style={styles.subtitle}>
