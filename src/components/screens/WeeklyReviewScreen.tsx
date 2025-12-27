@@ -1,15 +1,84 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { weeklyReviewService } from '../../services/supabase-services';
 
 export default function WeeklyReviewScreen() {
   const navigation = useNavigation<any>();
-  const { missions, streak } = useApp();
+  const { missions, streak, user } = useApp();
+  const [saving, setSaving] = useState(false);
 
   const weekMissions = missions.filter(m => m.completed).slice(0, 5);
   const weeklyScore = weekMissions.length;
+
+  // Get week start and end dates (Monday to Sunday)
+  const getWeekDates = () => {
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    
+    const monday = new Date(now);
+    monday.setDate(now.getDate() + diffToMonday);
+    monday.setHours(0, 0, 0, 0);
+    
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+    sunday.setHours(23, 59, 59, 999);
+    
+    return {
+      start: monday.toISOString().split('T')[0],
+      end: sunday.toISOString().split('T')[0],
+    };
+  };
+
+  // Auto-save review on mount
+  useEffect(() => {
+    const saveReview = async () => {
+      if (!user) return;
+      
+      const { start, end } = getWeekDates();
+      
+      // Get missions for this week
+      const weekStart = new Date(start);
+      const weekEnd = new Date(end);
+      const thisWeekMissions = missions.filter(m => {
+        const missionDate = new Date(m.date);
+        return missionDate >= weekStart && missionDate <= weekEnd;
+      });
+      
+      const totalMissions = thisWeekMissions.length;
+      const completedMissions = thisWeekMissions.filter(m => m.completed).length;
+      
+      // Find most common feeling
+      const feelings = thisWeekMissions
+        .filter(m => m.feeling)
+        .map(m => m.feeling);
+      
+      const mostCommonFeeling = feelings.length > 0
+        ? feelings.sort((a, b) =>
+            feelings.filter(f => f === a).length - feelings.filter(f => f === b).length
+          ).pop()
+        : undefined;
+
+      // Save to database
+      const { error } = await weeklyReviewService.saveWeeklyReview({
+        week_start: start,
+        week_end: end,
+        total_missions: totalMissions,
+        completed_missions: completedMissions,
+        most_common_feeling: mostCommonFeeling,
+      });
+
+      if (error) {
+        console.error('Error saving weekly review:', error);
+      }
+    };
+
+    saveReview();
+  }, [user, missions]);
 
   return (
     <View style={styles.container}>

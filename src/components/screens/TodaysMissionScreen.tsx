@@ -3,16 +3,22 @@ import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useTimeUntilMidnight } from '../../hooks/useTimeUntilMidnight';
 
 export default function TodaysMissionScreen() {
   const navigation = useNavigation<any>();
   const { missions, setCurrentMission } = useApp();
+  const timeLeft = useTimeUntilMidnight();
 
-  const todaysMission = missions.find(m => !m.completed) || missions[0];
+  // Get TODAY's mission (completed or not)
+  const today = new Date().toISOString().split('T')[0];
+  const todaysMission = missions.find(m => m.date === today);
 
   const handleStartMission = () => {
-    setCurrentMission(todaysMission);
-    navigation.navigate('TaskInstruction');
+    if (todaysMission && !todaysMission.completed) {
+      setCurrentMission(todaysMission);
+      navigation.navigate('TaskInstruction');
+    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
@@ -25,6 +31,94 @@ export default function TodaysMissionScreen() {
         return { bg: '#fee2e2', text: '#991b1b' };
     }
   };
+
+  // Show loading/empty state if no mission
+  if (!todaysMission) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
+        >
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+        </LinearGradient>
+        <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
+          <Ionicons name="calendar" size={80} color="#9333ea" />
+          <Text style={[styles.title, { marginTop: 20, textAlign: 'center' }]}>No mission for today yet</Text>
+          <Text style={[styles.subtitle, { textAlign: 'center', marginTop: 10 }]}>Check back tomorrow for your next mission!</Text>
+        </View>
+      </View>
+    );
+  }
+
+  // Show completed state if mission is done
+  if (todaysMission.completed) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
+        >
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+        </LinearGradient>
+        <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
+          <Ionicons name="checkmark-circle" size={100} color="#10b981" />
+          <Text style={[styles.title, { marginTop: 24, textAlign: 'center' }]}>Mission Completed!</Text>
+          <Text style={[styles.subtitle, { textAlign: 'center', marginTop: 12 }]}>
+            Great job! Come back tomorrow for your next mission.
+          </Text>
+          
+          <View style={styles.countdownCard}>
+            <View style={styles.countdownHeader}>
+              <Ionicons name="time-outline" size={24} color="#2563eb" />
+              <Text style={styles.countdownTitle}>Next Mission In:</Text>
+            </View>
+            
+            <View style={styles.timerDisplay}>
+              <View style={styles.timeBox}>
+                <Text style={styles.timeNumber}>{String(timeLeft.hours).padStart(2, '0')}</Text>
+                <Text style={styles.timeLabel}>hours</Text>
+              </View>
+              <Text style={styles.timeSeparator}>:</Text>
+              <View style={styles.timeBox}>
+                <Text style={styles.timeNumber}>{String(timeLeft.minutes).padStart(2, '0')}</Text>
+                <Text style={styles.timeLabel}>minutes</Text>
+              </View>
+              <Text style={styles.timeSeparator}>:</Text>
+              <View style={styles.timeBox}>
+                <Text style={styles.timeNumber}>{String(timeLeft.seconds).padStart(2, '0')}</Text>
+                <Text style={styles.timeLabel}>seconds</Text>
+              </View>
+            </View>
+          </View>
+          
+          <TouchableOpacity 
+            style={[styles.startButton, { marginTop: 30 }]}
+            onPress={() => navigation.navigate('HomeTab')}
+          >
+            <LinearGradient
+              colors={['#2563eb', '#9333ea']}
+              style={styles.startButtonGradient}
+            >
+              <Text style={styles.startButtonText}>Back to Home</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 
   const difficultyColors = getDifficultyColor(todaysMission.difficulty);
 
@@ -214,5 +308,65 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: '#6b7280',
+    lineHeight: 24,
+  },
+  countdownCard: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    borderRadius: 16,
+    padding: 24,
+    marginTop: 32,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  countdownHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginBottom: 20,
+  },
+  countdownTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+  },
+  timerDisplay: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  timeBox: {
+    backgroundColor: '#f3f4f6',
+    borderRadius: 12,
+    padding: 16,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  timeNumber: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#2563eb',
+  },
+  timeLabel: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginTop: 4,
+  },
+  timeSeparator: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#9ca3af',
+    marginHorizontal: 4,
   },
 });

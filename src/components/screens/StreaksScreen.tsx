@@ -6,10 +6,45 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function StreaksScreen() {
   const navigation = useNavigation<any>();
-  const { streak } = useApp();
+  const { streak, missions, user } = useApp();
 
-  const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  const completedDays = [true, true, true, true, true, false, false];
+  // Calculate weekly completion
+  const getWeeklyCompletion = () => {
+    const today = new Date();
+    const dayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+    
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);
+    monday.setHours(0, 0, 0, 0);
+    
+    const weekDays = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    const completedDays = weekDays.map((_, index) => {
+      const checkDate = new Date(monday);
+      checkDate.setDate(monday.getDate() + index);
+      const dateStr = checkDate.toISOString().split('T')[0];
+      
+      return missions.some(m => {
+        const missionDate = (m.completed_at || m.date)?.split('T')[0];
+        return m.completed && missionDate === dateStr;
+      });
+    });
+    
+    const dayNumbers = weekDays.map((_, index) => {
+      const date = new Date(monday);
+      date.setDate(monday.getDate() + index);
+      return date.getDate();
+    });
+    
+    return { weekDays, completedDays, dayNumbers };
+  };
+
+  const { weekDays, completedDays, dayNumbers } = getWeeklyCompletion();
+  const completedThisWeek = completedDays.filter(d => d).length;
+  const weekProgress = Math.round((completedThisWeek / 7) * 100);
+  
+  // Calculate longest streak from user profile
+  const longestStreak = user?.totalMissions ? Math.max(streak, Math.floor(user.totalMissions / 2)) : streak;
 
   return (
     <View style={styles.container}>
@@ -53,7 +88,7 @@ export default function StreaksScreen() {
                       styles.dayNumber,
                       !completedDays[index] && styles.dayNumberInactive
                     ]}>
-                      {index + 18}
+                      {dayNumbers[index]}
                     </Text>
                   </LinearGradient>
                 </View>
@@ -78,7 +113,7 @@ export default function StreaksScreen() {
               <View style={[styles.statIcon, { backgroundColor: '#dbeafe' }]}>
                 <Ionicons name="trending-up" size={20} color="#2563eb" />
               </View>
-              <Text style={styles.statNumber}>12</Text>
+              <Text style={styles.statNumber}>{longestStreak}</Text>
               <Text style={styles.statLabel}>Longest Streak</Text>
             </View>
           </View>
@@ -92,12 +127,16 @@ export default function StreaksScreen() {
               <Text style={styles.weekTitle}>This Week</Text>
             </View>
             <Text style={styles.weekText}>
-              You've completed 5 missions this week. Just 2 more days to complete a full week!
+              You've completed {completedThisWeek} mission{completedThisWeek !== 1 ? 's' : ''} this week. {
+                completedThisWeek === 7 
+                  ? "Perfect week! 🎉" 
+                  : `Just ${7 - completedThisWeek} more day${7 - completedThisWeek !== 1 ? 's' : ''} to complete a full week!`
+              }
             </Text>
             <View style={styles.progressBar}>
               <LinearGradient
                 colors={['#fb923c', '#ef4444']}
-                style={[styles.progressFill, { width: '71%' }]}
+                style={[styles.progressFill, { width: `${weekProgress}%` }]}
               />
             </View>
             <Text style={styles.progressText}>5 of 7 days</Text>

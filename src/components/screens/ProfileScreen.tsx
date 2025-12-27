@@ -9,7 +9,46 @@ export default function ProfileScreen() {
   const { user, streak, missions } = useApp();
 
   const completedMissions = missions.filter(m => m.completed).length;
-  const joinDate = user?.joinDate ? new Date(user.joinDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'November 2024';
+  const joinDate = user?.joinDate ? new Date(user.joinDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  
+  // Calculate badges based on actual progress
+  const badges = Math.floor(completedMissions / 5); // 1 badge per 5 missions
+  
+  // Get recent achievements based on actual data
+  const getRecentAchievements = () => {
+    const achievements = [];
+    
+    if (streak >= 5) {
+      achievements.push({
+        emoji: '🏆',
+        title: `${streak} Day Streak`,
+        subtitle: 'Keep it up!',
+        colors: ['#fef3c7', '#fed7aa']
+      });
+    }
+    
+    if (completedMissions >= 1) {
+      achievements.push({
+        emoji: '⭐',
+        title: 'First Mission',
+        subtitle: 'Completed your first mission',
+        colors: ['#dbeafe', '#f3e8ff']
+      });
+    }
+    
+    if (completedMissions >= 10) {
+      achievements.push({
+        emoji: '💪',
+        title: 'Social Butterfly',
+        subtitle: '10 missions completed',
+        colors: ['#d1fae5', '#a7f3d0']
+      });
+    }
+    
+    return achievements;
+  };
+  
+  const recentAchievements = getRecentAchievements();
 
   return (
     <View style={styles.container}>
@@ -67,55 +106,34 @@ export default function ProfileScreen() {
               <View style={[styles.statIcon, { backgroundColor: '#f3e8ff' }]}>
                 <Ionicons name="ribbon" size={20} color="#9333ea" />
               </View>
-              <Text style={styles.statNumber}>12</Text>
+              <Text style={styles.statNumber}>{badges}</Text>
               <Text style={styles.statLabel}>Badges</Text>
             </View>
           </View>
 
-          <View style={styles.achievements}>
-            <Text style={styles.achievementsTitle}>Recent Achievements</Text>
-            
-            <View style={styles.achievementsList}>
-              <LinearGradient
-                colors={['#fef3c7', '#fed7aa']}
-                style={styles.achievementCard}
-              >
-                <View style={styles.achievementIcon}>
-                  <Text style={styles.achievementEmoji}>🏆</Text>
-                </View>
-                <View style={styles.achievementText}>
-                  <Text style={styles.achievementTitle}>5 Day Streak</Text>
-                  <Text style={styles.achievementSubtitle}>Keep it up!</Text>
-                </View>
-              </LinearGradient>
-
-              <LinearGradient
-                colors={['#dbeafe', '#f3e8ff']}
-                style={styles.achievementCard}
-              >
-                <View style={styles.achievementIcon}>
-                  <Text style={styles.achievementEmoji}>⭐</Text>
-                </View>
-                <View style={styles.achievementText}>
-                  <Text style={styles.achievementTitle}>First Mission</Text>
-                  <Text style={styles.achievementSubtitle}>Completed your first mission</Text>
-                </View>
-              </LinearGradient>
-
-              <LinearGradient
-                colors={['#d1fae5', '#a7f3d0']}
-                style={styles.achievementCard}
-              >
-                <View style={styles.achievementIcon}>
-                  <Text style={styles.achievementEmoji}>💪</Text>
-                </View>
-                <View style={styles.achievementText}>
-                  <Text style={styles.achievementTitle}>Social Butterfly</Text>
-                  <Text style={styles.achievementSubtitle}>10 missions completed</Text>
-                </View>
-              </LinearGradient>
+          {recentAchievements.length > 0 && (
+            <View style={styles.achievements}>
+              <Text style={styles.achievementsTitle}>Recent Achievements</Text>
+              
+              <View style={styles.achievementsList}>
+                {recentAchievements.map((achievement, index) => (
+                  <LinearGradient
+                    key={index}
+                    colors={achievement.colors as [string, string]}
+                    style={styles.achievementCard}
+                  >
+                    <View style={styles.achievementIcon}>
+                      <Text style={styles.achievementEmoji}>{achievement.emoji}</Text>
+                    </View>
+                    <View style={styles.achievementText}>
+                      <Text style={styles.achievementTitle}>{achievement.title}</Text>
+                      <Text style={styles.achievementSubtitle}>{achievement.subtitle}</Text>
+                    </View>
+                  </LinearGradient>
+                ))}
+              </View>
             </View>
-          </View>
+          )}
 
           <View style={styles.accountSection}>
             <Text style={styles.sectionTitle}>Account</Text>

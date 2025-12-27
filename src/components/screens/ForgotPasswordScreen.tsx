@@ -2,17 +2,31 @@ import { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { supabase } from '../../lib/supabase-client';
 
 export default function ForgotPasswordScreen() {
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState('');
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!email) {
       Alert.alert('Error', 'Please enter your email');
       return;
     }
+
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'humanping://reset-password',
+    });
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Error', error.message || 'Failed to send reset email');
+      return;
+    }
+
     setSent(true);
     Alert.alert('Success', 'Password reset link sent!');
   };
@@ -81,8 +95,12 @@ export default function ForgotPasswordScreen() {
           </View>
 
           <View style={styles.footer}>
-            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-              <Text style={styles.buttonText}>Send Reset Link</Text>
+            <TouchableOpacity 
+              style={[styles.button, loading && styles.buttonDisabled]} 
+              onPress={handleSubmit}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>{loading ? 'Sending...' : 'Send Reset Link'}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -161,6 +179,9 @@ const styles = StyleSheet.create({
     height: 48,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     color: '#ffffff',

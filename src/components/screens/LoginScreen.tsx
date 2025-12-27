@@ -9,13 +9,23 @@ export default function LoginScreen() {
   const { login } = useApp();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
-    login(email, password);
+    
+    setLoading(true);
+    const { error } = await login(email, password);
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Error', error.message || 'Failed to log in');
+      return;
+    }
+
     Alert.alert('Success', 'Welcome back!');
     navigation.navigate('Main');
   };
@@ -79,8 +89,12 @@ export default function LoginScreen() {
           </View>
 
           <View style={styles.footer}>
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Log In</Text>
+            <TouchableOpacity 
+              style={[styles.button, loading && styles.buttonDisabled]} 
+              onPress={handleLogin}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>{loading ? 'Logging in...' : 'Log In'}</Text>
             </TouchableOpacity>
 
             <View style={styles.signupContainer}>
@@ -177,6 +191,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     color: '#ffffff',

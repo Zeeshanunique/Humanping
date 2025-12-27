@@ -6,48 +6,8 @@ import { Ionicons } from '@expo/vector-icons';
 export default function NotificationsScreen() {
   const navigation = useNavigation<any>();
 
-  const notifications = [
-    {
-      id: 1,
-      type: 'success',
-      title: 'Mission Completed! 🎉',
-      message: 'You completed "Say hi to your neighbor"',
-      time: '2 hours ago',
-      iconName: 'checkmark-circle' as const,
-      iconColor: '#16a34a',
-      bgColor: '#dcfce7',
-    },
-    {
-      id: 2,
-      type: 'info',
-      title: 'New Mission Available',
-      message: 'Your daily mission is ready to start',
-      time: '1 day ago',
-      iconName: 'information-circle' as const,
-      iconColor: '#2563eb',
-      bgColor: '#dbeafe',
-    },
-    {
-      id: 3,
-      type: 'streak',
-      title: '5 Day Streak! 🔥',
-      message: 'Keep up the amazing work',
-      time: '2 days ago',
-      iconName: 'alert-circle' as const,
-      iconColor: '#ea580c',
-      bgColor: '#fed7aa',
-    },
-    {
-      id: 4,
-      type: 'success',
-      title: 'Achievement Unlocked',
-      message: 'You earned the "Social Butterfly" badge',
-      time: '3 days ago',
-      iconName: 'checkmark-circle' as const,
-      iconColor: '#9333ea',
-      bgColor: '#f3e8ff',
-    }
-  ];
+  // Empty notifications for now - will be populated when user completes missions
+  const notifications: any[] = [];
 
   return (
     <View style={styles.container}>
@@ -66,43 +26,46 @@ export default function NotificationsScreen() {
 
           <View style={styles.headerRow}>
             <Text style={styles.title}>Notifications</Text>
-            <TouchableOpacity>
-              <Text style={styles.markAllText}>Mark all read</Text>
-            </TouchableOpacity>
+            {notifications.length > 0 && (
+              <TouchableOpacity>
+                <Text style={styles.markAllText}>Mark all read</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </LinearGradient>
 
         <View style={styles.content}>
-          <View style={styles.notificationsList}>
-            {notifications.map((notification) => (
-              <View
-                key={notification.id}
-                style={styles.notificationCard}
-              >
-                <View style={styles.notificationContent}>
-                  <View style={[styles.iconContainer, { backgroundColor: notification.bgColor }]}>
-                    <Ionicons 
-                      name={notification.iconName} 
-                      size={20} 
-                      color={notification.iconColor} 
-                    />
-                  </View>
-                  <View style={styles.notificationText}>
-                    <Text style={styles.notificationTitle}>{notification.title}</Text>
-                    <Text style={styles.notificationMessage}>{notification.message}</Text>
-                    <Text style={styles.notificationTime}>{notification.time}</Text>
+          {notifications.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Ionicons name="notifications-off" size={64} color="#d1d5db" />
+              <Text style={styles.emptyTitle}>No notifications yet</Text>
+              <Text style={styles.emptyMessage}>
+                You'll see updates here when you complete missions
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.notificationsList}>
+              {notifications.map((notification: any) => (
+                <View
+                  key={notification.id}
+                  style={styles.notificationCard}
+                >
+                  <View style={styles.notificationContent}>
+                    <View style={[styles.iconContainer, { backgroundColor: notification.bgColor }]}>
+                      <Ionicons 
+                        name={notification.iconName} 
+                        size={20} 
+                        color={notification.iconColor} 
+                      />
+                    </View>
+                    <View style={styles.notificationText}>
+                      <Text style={styles.notificationTitle}>{notification.title}</Text>
+                      <Text style={styles.notificationMessage}>{notification.message}</Text>
+                      <Text style={styles.notificationTime}>{notification.time}</Text>
+                    </View>
                   </View>
                 </View>
-              </View>
-            ))}
-          </View>
-
-          {notifications.length === 0 && (
-            <View style={styles.emptyState}>
-              <View style={styles.emptyIcon}>
-                <Ionicons name="checkmark-circle" size={32} color="#9ca3af" />
-              </View>
-              <Text style={styles.emptyText}>No notifications</Text>
+              ))}
             </View>
           )}
         </View>
@@ -189,19 +152,19 @@ const styles = StyleSheet.create({
   },
   emptyState: {
     alignItems: 'center',
-    paddingVertical: 48,
+    paddingVertical: 64,
+    paddingHorizontal: 24,
   },
-  emptyIcon: {
-    width: 64,
-    height: 64,
-    backgroundColor: '#f3f4f6',
-    borderRadius: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#111827',
+    marginTop: 16,
+    marginBottom: 8,
   },
-  emptyText: {
-    fontSize: 16,
+  emptyMessage: {
+    fontSize: 14,
     color: '#6b7280',
+    textAlign: 'center',
   },
 });

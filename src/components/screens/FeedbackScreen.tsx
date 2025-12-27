@@ -3,17 +3,30 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Keyboa
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { useApp } from '../AppContext';
 
 export default function FeedbackScreen() {
   const navigation = useNavigation<any>();
+  const { submitFeedback } = useApp();
   const [feedback, setFeedback] = useState('');
   const [category, setCategory] = useState<string>('general');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!feedback.trim()) {
       Alert.alert('Error', 'Please enter your feedback');
       return;
     }
+
+    setLoading(true);
+    const { error } = await submitFeedback(category, feedback);
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Error', 'Failed to submit feedback. Please try again.');
+      return;
+    }
+
     Alert.alert('Success', 'Thank you for your feedback!');
     setFeedback('');
     setTimeout(() => navigation.goBack(), 1000);
@@ -105,9 +118,10 @@ export default function FeedbackScreen() {
           <TouchableOpacity 
             style={styles.submitButton}
             onPress={handleSubmit}
+            disabled={loading}
           >
             <Ionicons name="send" size={16} color="#ffffff" />
-            <Text style={styles.submitButtonText}>Send Feedback</Text>
+            <Text style={styles.submitButtonText}>{loading ? 'Sending...' : 'Send Feedback'}</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

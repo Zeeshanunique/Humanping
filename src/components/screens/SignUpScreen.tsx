@@ -11,8 +11,9 @@ export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
@@ -21,7 +22,16 @@ export default function SignUpScreen() {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
-    signup(name, email, password);
+    
+    setLoading(true);
+    const { error } = await signup(name, email, password);
+    setLoading(false);
+
+    if (error) {
+      Alert.alert('Error', error.message || 'Failed to create account');
+      return;
+    }
+
     Alert.alert('Success', 'Account created successfully!');
     navigation.navigate('Main');
   };
@@ -110,8 +120,12 @@ export default function SignUpScreen() {
           </View>
 
           <View style={styles.footer}>
-            <TouchableOpacity style={styles.button} onPress={handleSignUp}>
-              <Text style={styles.buttonText}>Create Account</Text>
+            <TouchableOpacity 
+              style={[styles.button, loading && styles.buttonDisabled]} 
+              onPress={handleSignUp}
+              disabled={loading}
+            >
+              <Text style={styles.buttonText}>{loading ? 'Creating Account...' : 'Create Account'}</Text>
             </TouchableOpacity>
 
             <View style={styles.loginContainer}>
@@ -199,6 +213,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     color: '#ffffff',

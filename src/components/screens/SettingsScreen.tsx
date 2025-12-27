@@ -1,21 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import { notificationPreferencesService } from '../../services/supabase-services';
 
 export default function SettingsScreen() {
   const navigation = useNavigation<any>();
-  const { logout } = useApp();
+  const { logout, user, testGenerateNewMission } = useApp();
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [sounds, setSounds] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    Alert.alert('Success', 'Logged out successfully');
-    navigation.navigate('Splash');
+  // Load notification preferences on mount
+  useEffect(() => {
+    const loadPreferences = async () => {
+      if (!user) return;
+      
+      const { data, error } = await notificationPreferencesService.getPreferences();
+      if (data && !error) {
+        setNotifications(data.push_enabled || false);
+        // You can add more preferences here as needed
+      }
+    };
+
+    loadPreferences();
+  }, [user]);
+
+  // Save notification preference when changed
+  const handleNotificationChange = async (value: boolean) => {
+    setNotifications(value);
+    
+    if (!user) return;
+    
+    setLoading(true);
+    const { error } = await notificationPreferencesService.updatePreferences({
+      push_enabled: value,
+    });
+    setLoading(false);
+
+    if (error) {
+      console.error('Error updating preferences:', error);
+      Alert.alert('Error', 'Failed to update notification preferences');
+      setNotifications(!value); // Revert on error
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      Alert.alert('Success', 'Logged out successfully');
+      navigation.navigate('Splash');
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('Error', 'Failed to log out. Please try again.');
+    }
   };
 
   return (
@@ -48,7 +89,11 @@ export default function SettingsScreen() {
                     <Text style={styles.settingSubtitle}>Daily reminders</Text>
                   </View>
                 </View>
-                <Switch value={notifications} onValueChange={setNotifications} />
+                <Switch 
+                  value={notifications} 
+                  onValueChange={handleNotificationChange}
+                  disabled={loading}
+                />
               </View>
 
               <View style={styles.divider} />
@@ -110,6 +155,30 @@ export default function SettingsScreen() {
                   </View>
                 </View>
                 <Ionicons name="chevron-forward" size={20} color="#9ca3af" />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* TEST MODE SECTION - Remove after testing */}
+          <View style={styles.section}>
+            <Text style={[styles.sectionTitle, { color: '#dc2626' }]}>🧪 Test Mode</Text>
+            <View style={styles.card}>
+              <TouchableOpacity 
+                style={styles.settingItem}
+                onPress={testGenerateNewMission}
+              >
+                <View style={styles.settingInfo}>
+                  <Ionicons name="flask" size={20} color="#dc2626" />
+                  <View style={styles.settingText}>
+                    <Text style={[styles.settingTitle, { color: '#dc2626' }]}>
+                      Generate Next Mission
+                    </Text>
+                    <Text style={styles.settingSubtitle}>
+                      Test countdown auto-refresh
+                    </Text>
+                  </View>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#dc2626" />
               </TouchableOpacity>
             </View>
           </View>

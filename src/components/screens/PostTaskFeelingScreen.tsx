@@ -20,7 +20,7 @@ export default function PostTaskFeelingScreen() {
 
   const handleContinue = () => {
     if (currentMission && selectedFeeling) {
-      updateMission(currentMission.id, { postFeeling: selectedFeeling });
+      updateMission(currentMission.id, { post_feeling: selectedFeeling });
     }
     navigation.navigate('TaskCompletion');
   };

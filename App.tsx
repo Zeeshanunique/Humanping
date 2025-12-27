@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AppProvider } from './src/components/AppContext';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
+import { View, ActivityIndicator, Text } from 'react-native';
 // CSS import removed for web compatibility - styles handled by NativeWind/Tailwind
 
 import SplashScreen from './src/components/screens/SplashScreen';
