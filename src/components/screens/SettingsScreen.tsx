@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useApp } from '../AppContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { notificationPreferencesService } from '../../services/supabase-services';
@@ -9,10 +10,12 @@ import { notificationPreferencesService } from '../../services/supabase-services
 export default function SettingsScreen() {
   const navigation = useNavigation<any>();
   const { logout, user, testGenerateNewMission } = useApp();
+  const { theme, setTheme, isDark } = useTheme();
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [sounds, setSounds] = useState(true);
   const [loading, setLoading] = useState(false);
+  
+  const darkMode = theme === 'dark';
 
   // Load notification preferences on mount
   useEffect(() => {
@@ -103,10 +106,15 @@ export default function SettingsScreen() {
                   <Ionicons name="moon" size={20} color="#6b7280" />
                   <View style={styles.settingText}>
                     <Text style={styles.settingTitle}>Dark Mode</Text>
-                    <Text style={styles.settingSubtitle}>Theme preference</Text>
+                    <Text style={styles.settingSubtitle}>
+                      {theme === 'system' ? 'System default' : theme === 'dark' ? 'Dark' : 'Light'}
+                    </Text>
                   </View>
                 </View>
-                <Switch value={darkMode} onValueChange={setDarkMode} />
+                <Switch 
+                  value={darkMode} 
+                  onValueChange={(value) => setTheme(value ? 'dark' : 'light')} 
+                />
               </View>
 
               <View style={styles.divider} />
@@ -145,7 +153,7 @@ export default function SettingsScreen() {
 
               <TouchableOpacity 
                 style={styles.settingItem}
-                onPress={() => navigation.navigate('Feedback')}
+                onPress={() => navigation.navigate('HelpSupport')}
               >
                 <View style={styles.settingInfo}>
                   <Ionicons name="help-circle" size={20} color="#6b7280" />

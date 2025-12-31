@@ -62,17 +62,18 @@ serve(async (req) => {
       ? new Date(Date.now() + 86400000).toISOString().split('T')[0] // Tomorrow for testing
       : new Date().toISOString().split('T')[0]
 
-    console.log(`📅 Checking for mission on date: ${today} (testMode: ${testMode})`)
+    console.log(`📅 Checking for incomplete mission on date: ${today} (testMode: ${testMode})`)
 
-    // Check if user already has a mission for today
-    const { data: existingMission, error: checkError } = await supabase
+    // Check if user already has an INCOMPLETE mission for today
+    const { data: incompleteMissions, error: checkError } = await supabase
       .from('missions')
       .select('*')
       .eq('user_id', user.id)
       .eq('date', today)
-      .maybeSingle()
+      .eq('completed', false)
+      .limit(1)
 
-    if (checkError && checkError.code !== 'PGRST116') {
+    if (checkError) {
       console.error('Error checking for existing mission:', checkError)
       return new Response(
         JSON.stringify({ error: 'Failed to check for existing mission' }),
@@ -80,16 +81,20 @@ serve(async (req) => {
       )
     }
 
-    if (existingMission) {
-      console.log('✅ Mission already exists for today')
+    // If there's an incomplete mission, return it (don't create duplicate)
+    if (incompleteMissions && incompleteMissions.length > 0) {
+      console.log('✅ Incomplete mission already exists for today')
       return new Response(
         JSON.stringify({ 
-          message: 'Mission for today already exists',
-          mission: existingMission
+          message: 'Incomplete mission for today already exists',
+          mission: incompleteMissions[0]
         }),
         { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+
+    // All missions for today are completed, create a new one
+    console.log('✨ All missions completed for today, creating new mission...')
 
     // Get user's completed missions count to determine difficulty
     const { data: missions } = await supabase

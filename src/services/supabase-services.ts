@@ -125,10 +125,13 @@ export interface Feedback {
 
 export const feedbackService = {
   // Submit feedback
-  async submitFeedback(feedback: { type: string; message: string }) {
+  async submitFeedback(feedback: { type: string; message: string; user_id?: string }) {
     const { data, error } = await supabase
       .from('feedback')
-      .insert(feedback)
+      .insert({
+        ...feedback,
+        created_at: new Date().toISOString(),
+      })
       .select()
       .single();
     

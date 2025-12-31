@@ -291,11 +291,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
           fullResponse: data,
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Exception generating daily mission:', error);
       console.error('Error details:', {
-        message: error.message,
-        stack: error.stack,
+        message: error?.message,
+        stack: error?.stack,
       });
     } finally {
       isGeneratingMissionRef.current = false;
@@ -336,10 +336,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (data) {
         setMissions(missions.map(m => m.id === id ? data as any : m));
         
-        // If mission was completed, reload profile to get updated streak
+        // If mission was completed, reload profile and generate new mission
         if (updates.completed) {
           if (accessToken) {
             await fetchUserProfile(accessToken);
+            
+            // Generate new mission immediately after completion
+            console.log('🎯 Mission completed! Generating new mission...');
+            await generateDailyMission(accessToken, false); // false = create for today
+            
+            // Reload missions to show the new one
+            if (user) {
+              await loadMissionsForUser(user.id);
+            }
           }
         }
       }
@@ -348,8 +357,55 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const incrementStreak = () => {
-    setStreak(prev => prev + 1);
+  const incrementStreak = async () => {
+    if (!user || !accessToken) return;
+    
+    try {
+      // Calculate streak based on consecutive completed missions
+      const completedMissions = missions.filter(m => m.completed).sort((a, b) => {
+        const dateA = new Date(a.date).getTime();
+        const dateB = new Date(b.date).getTime();
+        return dateB - dateA; // Sort descending (most recent first)
+      });
+
+      let newStreak = 0;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Count consecutive days with completed missions
+      for (let i = 0; i < completedMissions.length; i++) {
+        const missionDate = new Date(completedMissions[i].date);
+        missionDate.setHours(0, 0, 0, 0);
+        
+        const expectedDate = new Date(today);
+        expectedDate.setDate(today.getDate() - i);
+        
+        if (missionDate.getTime() === expectedDate.getTime()) {
+          newStreak++;
+        } else {
+          break; // Streak broken
+        }
+      }
+
+      // Update streak in database
+      const { error } = await profileService.updateProfile({
+        streak: newStreak,
+        longest_streak: Math.max(user.streak || 0, newStreak),
+        last_mission_date: new Date().toISOString().split('T')[0],
+      });
+
+      if (!error) {
+        setStreak(newStreak);
+        // Reload user profile to get updated streak
+        if (accessToken) {
+          await fetchUserProfile(accessToken);
+        }
+      } else {
+        console.error('Error updating streak:', error);
+      }
+    } catch (error: any) {
+      console.error('Error incrementing streak:', error);
+    }
   };
 
   const login = async (email: string, password: string) => {
@@ -518,11 +574,22 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const submitFeedback = async (type: string, message: string) => {
     try {
-      const { error } = await feedbackService.submitFeedback({ type, message });
+      if (!user) {
+        return { error: new Error('User must be logged in to submit feedback') };
+      }
+      
+      const { error } = await feedbackService.submitFeedback({ 
+        type, 
+        message,
+        user_id: user.id,
+      });
+      
       if (error) {
         console.error('Error submitting feedback:', error);
         return { error };
       }
+      
+      console.log('✅ Feedback submitted successfully');
       return { error: null };
     } catch (error: any) {
       console.error('Submit feedback error:', error);

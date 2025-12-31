@@ -11,8 +11,20 @@ export default function ProfileScreen() {
   const completedMissions = missions.filter(m => m.completed).length;
   const joinDate = user?.joinDate ? new Date(user.joinDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   
-  // Calculate badges based on actual progress
-  const badges = Math.floor(completedMissions / 5); // 1 badge per 5 missions
+  // Calculate badges based on milestones
+  const getBadgeCount = () => {
+    let count = 0;
+    if (completedMissions >= 1) count++; // First Mission
+    if (completedMissions >= 5) count++; // Getting Started
+    if (completedMissions >= 10) count++; // Social Butterfly
+    if (completedMissions >= 25) count++; // Active Member
+    if (completedMissions >= 50) count++; // Dedicated
+    if (streak >= 7) count++; // Week Warrior
+    if (streak >= 30) count++; // Unstoppable
+    return count;
+  };
+  
+  const badges = getBadgeCount();
   
   // Get recent achievements based on actual data
   const getRecentAchievements = () => {
@@ -163,7 +175,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity 
             style={styles.editButton}
-            onPress={() => navigation.navigate('Settings')}
+            onPress={() => navigation.navigate('EditProfile')}
           >
             <Text style={styles.editButtonText}>Edit Profile</Text>
           </TouchableOpacity>

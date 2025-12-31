@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AppProvider } from './src/components/AppContext';
+import { ThemeProvider } from './src/contexts/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { View, ActivityIndicator, Text } from 'react-native';
@@ -18,8 +19,10 @@ import LoginScreen from './src/components/screens/LoginScreen';
 import ForgotPasswordScreen from './src/components/screens/ForgotPasswordScreen';
 import HomeDashboard from './src/components/screens/HomeDashboard';
 import ProfileScreen from './src/components/screens/ProfileScreen';
+import EditProfileScreen from './src/components/screens/EditProfileScreen';
 import SettingsScreen from './src/components/screens/SettingsScreen';
 import FeedbackScreen from './src/components/screens/FeedbackScreen';
+import HelpSupportScreen from './src/components/screens/HelpSupportScreen';
 import NotificationsScreen from './src/components/screens/NotificationsScreen';
 import HistoryScreen from './src/components/screens/HistoryScreen';
 import StreaksScreen from './src/components/screens/StreaksScreen';
@@ -91,9 +94,10 @@ function MainTabs() {
 
 export default function App() {
   return (
-    <AppProvider>
-      <StatusBar style="auto" />
-      <NavigationContainer>
+    <ThemeProvider>
+      <AppProvider>
+        <StatusBar style="auto" />
+        <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -110,7 +114,9 @@ export default function App() {
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="Main" component={MainTabs} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen name="Feedback" component={FeedbackScreen} />
+          <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
           <Stack.Screen name="Streaks" component={StreaksScreen} />
           <Stack.Screen name="TodaysMission" component={TodaysMissionScreen} />
@@ -124,8 +130,9 @@ export default function App() {
           <Stack.Screen name="WeeklyReview" component={WeeklyReviewScreen} />
           <Stack.Screen name="MissionsCompleted" component={MissionsCompletedScreen} />
         </Stack.Navigator>
-      </NavigationContainer>
-    </AppProvider>
+        </NavigationContainer>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 

@@ -1,0 +1,184 @@
+<mxfile host="65bd71144e">
+    <diagram name="HumanPing Architecture" id="humanping-architecture">
+        <mxGraphModel dx="1720" dy="1060" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="HumanPing Application Architecture" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=28;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="550" y="20" width="700" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="client-layer" value="📱 Client Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=18;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="40" y="90" width="1720" height="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="mobile-icon" value="" style="shape=image;html=1;image=img/lib/general/mobile_device.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="client-layer" vertex="1">
+                    <mxGeometry x="80" y="50" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="mobile-app" value="Mobile App&#10;React Native / Expo&#10;iOS &amp; Android" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=12;fontStyle=1" parent="client-layer" vertex="1">
+                    <mxGeometry x="60" y="120" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="web-icon" value="" style="shape=image;html=1;image=img/lib/general/browser.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="client-layer" vertex="1">
+                    <mxGeometry x="330" y="50" width="60" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="web-app" value="Web App&#10;React / Expo Web&#10;Browser" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=middle;fontSize=12;fontStyle=1" parent="client-layer" vertex="1">
+                    <mxGeometry x="310" y="120" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="app-layer" value="⚙️ Application Layer" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=18;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="40" y="350" width="1720" height="420" as="geometry"/>
+                </mxCell>
+                <mxCell id="state-icon" value="" style="shape=image;html=1;image=img/lib/general/data.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="app-layer" vertex="1">
+                    <mxGeometry x="80" y="50" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="app-context" value="&lt;b&gt;AppContext&lt;/b&gt;&lt;br&gt;State Management" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;align=center;verticalAlign=top;fontSize=11;fontStyle=1" parent="app-layer" vertex="1">
+                    <mxGeometry x="60" y="50" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="screens-icon" value="" style="shape=image;html=1;image=img/lib/general/screen.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="app-layer" vertex="1">
+                    <mxGeometry x="320" y="50" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="screens-group" value="Screen Components" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1" parent="app-layer" vertex="1">
+                    <mxGeometry x="300" y="50" width="700" height="320" as="geometry"/>
+                </mxCell>
+                <mxCell id="auth-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#9673a6&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot;&gt;&lt;b&gt;🔐 Auth Screens&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;LoginScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;SignUpScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ForgotPasswordScreen&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="screens-group" vertex="1">
+                    <mxGeometry x="20" y="30" width="150" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="mission-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#9673a6&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot;&gt;&lt;b&gt;🎯 Mission Screens&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;TodaysMissionScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;TaskSelectionScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;TaskInstructionScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;TaskCompletionScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;PostTaskFeelingScreen&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="screens-group" vertex="1">
+                    <mxGeometry x="190" y="30" width="160" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="profile-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#9673a6&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot;&gt;&lt;b&gt;👤 Profile Screens&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;HomeDashboard&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ProfileScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;HistoryScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;StreaksScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;WeeklyReviewScreen&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="screens-group" vertex="1">
+                    <mxGeometry x="370" y="30" width="150" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="other-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#9673a6&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot;&gt;&lt;b&gt;⚙️ Other Screens&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;SettingsScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;NotificationsScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;FeedbackScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;SuggestionScreen&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="screens-group" vertex="1">
+                    <mxGeometry x="540" y="30" width="150" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="intro-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#9673a6&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot;&gt;&lt;b&gt;🚀 Intro Screens&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;SplashScreen&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;Intro1-4Screen&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="screens-group" vertex="1">
+                    <mxGeometry x="20" y="150" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="ui-icon" value="" style="shape=image;html=1;image=img/lib/general/ui_elements.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="app-layer" vertex="1">
+                    <mxGeometry x="1040" y="50" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="ui-components" value="&lt;b&gt;UI Components&lt;/b&gt;&lt;br&gt;(shadcn/ui)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;align=center;verticalAlign=top;fontSize=11;fontStyle=1" parent="app-layer" vertex="1">
+                    <mxGeometry x="1020" y="50" width="200" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="services-icon" value="" style="shape=image;html=1;image=img/lib/general/services.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="app-layer" vertex="1">
+                    <mxGeometry x="80" y="200" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="services-layer" value="Services Layer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;align=center;verticalAlign=top;fontSize=14;fontStyle=1" parent="app-layer" vertex="1">
+                    <mxGeometry x="60" y="200" width="1200" height="180" as="geometry"/>
+                </mxCell>
+                <mxCell id="services-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:11px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#d79b00&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;3&quot;&gt;&lt;b&gt;📦 Services&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#fff2cc&quot;&gt;&lt;b&gt;supabase-services.ts&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#fff2cc&quot;&gt;&lt;b&gt;supabase-client.ts&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#fff2cc&quot;&gt;&lt;b&gt;Custom Hooks&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• missionsService&lt;/td&gt;&lt;td&gt;Supabase Client&lt;/td&gt;&lt;td&gt;• useAppNavigation&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• feedbackService&lt;/td&gt;&lt;td&gt;Configuration&lt;/td&gt;&lt;td&gt;• useTimeUntilMidnight&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• weeklyReviewService&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;• useTestCountdown&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• notificationPreferencesService&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• profileService&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;align=left;verticalAlign=top;" parent="services-layer" vertex="1">
+                    <mxGeometry x="20" y="30" width="1160" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="backend-layer" value="☁️ Backend Layer (Supabase)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=18;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="40" y="810" width="1720" height="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-icon" value="" style="shape=image;html=1;image=img/lib/general/cloud.png;verticalAlign=top;verticalLabelPosition=bottom;labelBackgroundColor=#ffffff;aspect=fixed;" parent="backend-layer" vertex="1">
+                    <mxGeometry x="80" y="50" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge-functions" value="Edge Functions (Deno)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=14;fontStyle=1" parent="backend-layer" vertex="1">
+                    <mxGeometry x="60" y="50" width="800" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="auth-function-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#6c8ebf&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;🔐 humanping-auth&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#dae8fc&quot;&gt;&lt;b&gt;Endpoint&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#dae8fc&quot;&gt;&lt;b&gt;Function&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;/register&lt;/td&gt;&lt;td&gt;User Registration&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;/profile (GET)&lt;/td&gt;&lt;td&gt;Get Profile&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;/profile (PUT)&lt;/td&gt;&lt;td&gt;Update Profile&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;" parent="edge-functions" vertex="1">
+                    <mxGeometry x="20" y="30" width="360" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="mission-function-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#6c8ebf&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot;&gt;&lt;b&gt;🎯 generate-daily-mission&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#dae8fc&quot;&gt;&lt;b&gt;Features&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Check existing mission&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Select template by difficulty&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Create daily mission&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Test mode support&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;align=left;verticalAlign=top;" parent="edge-functions" vertex="1">
+                    <mxGeometry x="400" y="30" width="360" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="supabase-services-backend" value="Supabase Services" style="swimlane;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=14;fontStyle=1" parent="backend-layer" vertex="1">
+                    <mxGeometry x="900" y="50" width="780" height="380" as="geometry"/>
+                </mxCell>
+                <mxCell id="supabase-services-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#9673a6&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;3&quot;&gt;&lt;b&gt;☁️ Supabase Services&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#e1d5e7&quot; align=&quot;center&quot;&gt;&lt;b&gt;🔐 Auth&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#e1d5e7&quot; align=&quot;center&quot;&gt;&lt;b&gt;⚡ Realtime&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#e1d5e7&quot; align=&quot;center&quot;&gt;&lt;b&gt;💾 Storage&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Authentication&lt;/td&gt;&lt;td&gt;• Real-time Updates&lt;/td&gt;&lt;td&gt;• File Storage&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Session Management&lt;/td&gt;&lt;td&gt;• Subscriptions&lt;/td&gt;&lt;td&gt;• Media Assets&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• JWT Tokens&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#9673a6;align=left;verticalAlign=top;" parent="supabase-services-backend" vertex="1">
+                    <mxGeometry x="20" y="30" width="740" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="database-layer" value="🗄️ Database Layer (PostgreSQL)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=18;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="40" y="1310" width="1720" height="590" as="geometry"/>
+                </mxCell>
+                <mxCell id="core-tables" value="Core Tables" style="swimlane;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=14;fontStyle=1" parent="database-layer" vertex="1">
+                    <mxGeometry x="60" y="50" width="800" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="profiles-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:10px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#82b366&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;👤 profiles&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#d5e8d4&quot;&gt;&lt;b&gt;Column&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#d5e8d4&quot;&gt;&lt;b&gt;Type&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;id&lt;/td&gt;&lt;td&gt;PK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;name, email&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;streak&lt;/td&gt;&lt;td&gt;INTEGER&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;total_missions&lt;/td&gt;&lt;td&gt;INTEGER&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;longest_streak&lt;/td&gt;&lt;td&gt;INTEGER&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;last_mission_date&lt;/td&gt;&lt;td&gt;DATE&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;align=left;verticalAlign=top;" parent="core-tables" vertex="1">
+                    <mxGeometry x="20" y="30" width="240" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="missions-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:10px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#82b366&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;🎯 missions&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#d5e8d4&quot;&gt;&lt;b&gt;Column&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#d5e8d4&quot;&gt;&lt;b&gt;Type&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;id&lt;/td&gt;&lt;td&gt;PK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;user_id&lt;/td&gt;&lt;td&gt;FK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;title, description&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;category, difficulty&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;completed&lt;/td&gt;&lt;td&gt;BOOLEAN&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;date&lt;/td&gt;&lt;td&gt;DATE&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;feeling, post_feeling&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;location&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;align=left;verticalAlign=top;" parent="core-tables" vertex="1">
+                    <mxGeometry x="280" y="30" width="240" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="mission-templates-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:10px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#82b366&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;📋 mission_templates&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#d5e8d4&quot;&gt;&lt;b&gt;Column&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#d5e8d4&quot;&gt;&lt;b&gt;Type&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;id&lt;/td&gt;&lt;td&gt;PK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;title, description&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;category, difficulty&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;location&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;align=left;verticalAlign=top;" parent="core-tables" vertex="1">
+                    <mxGeometry x="540" y="30" width="240" height="160" as="geometry"/>
+                </mxCell>
+                <mxCell id="feature-tables" value="Feature Tables" style="swimlane;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=14;fontStyle=1" parent="database-layer" vertex="1">
+                    <mxGeometry x="900" y="50" width="780" height="400" as="geometry"/>
+                </mxCell>
+                <mxCell id="feedback-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:10px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#b85450&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;💬 feedback&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f8cecc&quot;&gt;&lt;b&gt;Column&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f8cecc&quot;&gt;&lt;b&gt;Type&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;id&lt;/td&gt;&lt;td&gt;PK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;user_id&lt;/td&gt;&lt;td&gt;FK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;type, message&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;created_at&lt;/td&gt;&lt;td&gt;TIMESTAMP&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;" parent="feature-tables" vertex="1">
+                    <mxGeometry x="20" y="30" width="240" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="weekly-reviews-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:10px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#b85450&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;📊 weekly_reviews&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f8cecc&quot;&gt;&lt;b&gt;Column&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f8cecc&quot;&gt;&lt;b&gt;Type&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;id&lt;/td&gt;&lt;td&gt;PK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;user_id&lt;/td&gt;&lt;td&gt;FK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;week_start, week_end&lt;/td&gt;&lt;td&gt;DATE&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;total_missions&lt;/td&gt;&lt;td&gt;INTEGER&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;completed_missions&lt;/td&gt;&lt;td&gt;INTEGER&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;most_common_feeling&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;reflection&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;" parent="feature-tables" vertex="1">
+                    <mxGeometry x="280" y="30" width="240" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="notification-prefs-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;4&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;font-size:10px;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#b85450&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;2&quot;&gt;&lt;b&gt;🔔 notification_preferences&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#f8cecc&quot;&gt;&lt;b&gt;Column&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#f8cecc&quot;&gt;&lt;b&gt;Type&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;id&lt;/td&gt;&lt;td&gt;PK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;user_id&lt;/td&gt;&lt;td&gt;FK, UUID&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;daily_reminder&lt;/td&gt;&lt;td&gt;BOOLEAN&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;reminder_time&lt;/td&gt;&lt;td&gt;TIME&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;push_enabled&lt;/td&gt;&lt;td&gt;BOOLEAN&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;email_enabled&lt;/td&gt;&lt;td&gt;BOOLEAN&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;streak_reminders&lt;/td&gt;&lt;td&gt;BOOLEAN&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;push_token&lt;/td&gt;&lt;td&gt;TEXT&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;align=left;verticalAlign=top;" parent="feature-tables" vertex="1">
+                    <mxGeometry x="540" y="30" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="db-features-table" value="&lt;table border=&quot;1&quot; cellpadding=&quot;6&quot; cellspacing=&quot;0&quot; style=&quot;border-collapse:collapse;&quot;&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#d79b00&quot; align=&quot;center&quot; style=&quot;color:#ffffff;&quot; colspan=&quot;3&quot;&gt;&lt;b&gt;⚙️ Database Features&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td bgcolor=&quot;#ffe6cc&quot;&gt;&lt;b&gt;🔒 Row Level Security (RLS)&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffe6cc&quot;&gt;&lt;b&gt;⚡ Triggers&lt;/b&gt;&lt;/td&gt;&lt;td bgcolor=&quot;#ffe6cc&quot;&gt;&lt;b&gt;📇 Indexes&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• User-based access control&lt;/td&gt;&lt;td&gt;• update_streak_on_mission_complete&lt;/td&gt;&lt;td&gt;• user_id, date, completed&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;• Policies for all tables&lt;/td&gt;&lt;td&gt;• create_notification_preferences&lt;/td&gt;&lt;td&gt;• Performance optimization&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d79b00;align=left;verticalAlign=top;" parent="database-layer" vertex="1">
+                    <mxGeometry x="60" y="470" width="1620" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="conn1" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#82b366" parent="1" source="mobile-app" target="app-context" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="160" y="310" as="sourcePoint"/>
+                        <mxPoint x="210" y="260" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn2" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#82b366" parent="1" source="web-app" target="app-context" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="410" y="310" as="sourcePoint"/>
+                        <mxPoint x="460" y="260" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn3" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#b85450" parent="1" source="app-context" target="services-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="260" y="100" as="sourcePoint"/>
+                        <mxPoint x="310" y="50" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn4" value="HTTP/REST" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.15;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#d79b00;labelBackgroundColor=#ffffff;fontSize=10" parent="1" source="services-table" target="auth-function-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="600" y="780" as="sourcePoint"/>
+                        <mxPoint x="650" y="730" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn5" value="HTTP/REST" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#d79b00;labelBackgroundColor=#ffffff;fontSize=10" parent="1" source="services-table" target="mission-function-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="600" y="780" as="sourcePoint"/>
+                        <mxPoint x="650" y="730" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn7" value="SQL" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#6c8ebf;labelBackgroundColor=#ffffff;fontSize=10" parent="1" source="auth-function-table" target="profiles-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="200" y="1270" as="sourcePoint"/>
+                        <mxPoint x="250" y="1220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn8" value="SQL" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#6c8ebf;labelBackgroundColor=#ffffff;fontSize=10" parent="1" source="mission-function-table" target="missions-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="580" y="1270" as="sourcePoint"/>
+                        <mxPoint x="630" y="1220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn9" value="SQL" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#6c8ebf;labelBackgroundColor=#ffffff;fontSize=10" parent="1" source="mission-function-table" target="mission-templates-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="580" y="1270" as="sourcePoint"/>
+                        <mxPoint x="630" y="1220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn10" value="PostgREST API" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#9673a6;labelBackgroundColor=#ffffff;fontSize=10" parent="1" source="supabase-services-table" target="profiles-table" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1270" y="1270" as="sourcePoint"/>
+                        <mxPoint x="1320" y="1220" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="conn11" value="Context Provider" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=1;dashed=1;strokeColor=#b85450;labelBackgroundColor=#ffffff;fontSize=9" parent="1" source="app-context" target="screens-group" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="260" y="100" as="sourcePoint"/>
+                        <mxPoint x="310" y="50" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
