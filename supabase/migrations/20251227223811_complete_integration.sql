@@ -72,11 +72,23 @@ CREATE TABLE IF NOT EXISTS notification_preferences (
 );
 
 -- =============================================================================
--- 5. STREAK TRACKING (Add columns to profiles)
+-- 5. STREAK TRACKING (Ensure profiles columns exist)
 -- =============================================================================
 
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS last_mission_date DATE;
-ALTER TABLE profiles ADD COLUMN IF NOT EXISTS longest_streak INTEGER DEFAULT 0;
+-- These columns should already exist from the profiles migration
+-- But we add them here just in case for backwards compatibility
+DO $$ 
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name = 'profiles' AND column_name = 'last_mission_date') THEN
+    ALTER TABLE profiles ADD COLUMN last_mission_date DATE;
+  END IF;
+  
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns 
+                 WHERE table_name = 'profiles' AND column_name = 'longest_streak') THEN
+    ALTER TABLE profiles ADD COLUMN longest_streak INTEGER DEFAULT 0;
+  END IF;
+END $$;
 
 -- =============================================================================
 -- 6. ENABLE ROW LEVEL SECURITY
