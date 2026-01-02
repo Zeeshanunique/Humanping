@@ -304,9 +304,17 @@ export const profileService = {
 
   // Update profile
   async updateProfile(updates: any) {
+    // Get current user ID from auth
+    const { data: { user: authUser } } = await supabase.auth.getUser();
+    
+    if (!authUser) {
+      return { data: null, error: new Error('User not authenticated') };
+    }
+    
     const { data, error } = await supabase
       .from('profiles')
       .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', authUser.id)
       .select()
       .single();
     

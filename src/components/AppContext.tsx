@@ -170,7 +170,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         };
         
         setUser(userProfile);
-        console.log('✅ User state set');
+        setStreak(userProfile.streak); // Set streak from profile
+        console.log('✅ User state set with streak:', userProfile.streak);
         
         // Generate daily mission first (only on login)
         await generateDailyMission(token);
@@ -284,12 +285,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       
       if (response.ok) {
         console.log('✅ Daily mission check:', data.message);
+        return { success: true, data, message: data.message };
       } else {
         console.error('❌ Error generating daily mission:', {
           status: response.status,
           error: data.error,
           fullResponse: data,
         });
+        return { success: false, error: data.error };
       }
     } catch (error: any) {
       console.error('❌ Exception generating daily mission:', error);
@@ -297,6 +300,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         message: error?.message,
         stack: error?.stack,
       });
+      return { success: false, error: error.message };
     } finally {
       isGeneratingMissionRef.current = false;
       setIsGeneratingMission(false);
@@ -336,19 +340,60 @@ export function AppProvider({ children }: { children: ReactNode }) {
       if (data) {
         setMissions(missions.map(m => m.id === id ? data as any : m));
         
-        // If mission was completed, reload profile and generate new mission
+        // If mission was completed, update streak, reload profile and generate new mission
         if (updates.completed) {
-          if (accessToken) {
+          if (accessToken && user) {
+            console.log('✅ Mission marked as completed, starting post-completion flow...');
+            
+            // Wait a bit longer to ensure database commit
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Reload missions first to get updated list (with completed status)
+            console.log('🔄 Reloading missions after completion...');
+            await loadMissionsForUser(user.id);
+            
+            // Verify the mission is actually completed in the database
+            const { data: verifyMissions } = await missionsService.getAllMissions();
+            const completedMission = verifyMissions?.find((m: Mission) => m.id === id);
+            console.log(`🔍 Verification: Mission ${id} completed status:`, completedMission?.completed);
+            
+            if (!completedMission?.completed) {
+              console.warn('⚠️ Mission not marked as completed yet, retrying...');
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              await loadMissionsForUser(user.id);
+            }
+            
+            // Update streak based on updated missions
+            console.log('🔥 Updating streak...');
+            await incrementStreak();
+            
+            // Reload profile to get updated streak
             await fetchUserProfile(accessToken);
             
             // Generate new mission immediately after completion
             console.log('🎯 Mission completed! Generating new mission...');
-            await generateDailyMission(accessToken, false); // false = create for today
+            const missionResult = await generateDailyMission(accessToken, false); // false = create for today
+            console.log('📦 Mission generation result:', missionResult);
             
-            // Reload missions to show the new one
-            if (user) {
-              await loadMissionsForUser(user.id);
+            // Reload missions again to show the new one
+            console.log('🔄 Reloading missions to show new mission...');
+            await loadMissionsForUser(user.id);
+            
+            // Force state update to ensure UI refreshes
+            const updatedMissions = await missionsService.getAllMissions();
+            if (updatedMissions.data) {
+              setMissions(updatedMissions.data as Mission[]);
+              console.log(`✅ Loaded ${updatedMissions.data.length} missions`);
+              
+              // Log incomplete missions for today
+              const today = new Date().toISOString().split('T')[0];
+              const incompleteToday = updatedMissions.data.filter((m: Mission) => 
+                m.date === today && !m.completed
+              );
+              console.log(`📋 Incomplete missions for today: ${incompleteToday.length}`, incompleteToday.map((m: Mission) => m.title));
             }
+            
+            console.log('✅ Post-completion flow complete');
           }
         }
       }
@@ -361,8 +406,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
     if (!user || !accessToken) return;
     
     try {
+      // Fetch fresh missions from database to ensure we have latest data
+      const { data: freshMissions } = await missionsService.getAllMissions();
+      const missionsToUse = freshMissions || missions;
+      
       // Calculate streak based on consecutive completed missions
-      const completedMissions = missions.filter(m => m.completed).sort((a, b) => {
+      const completedMissions = missionsToUse.filter((m: Mission) => m.completed).sort((a: Mission, b: Mission) => {
         const dateA = new Date(a.date).getTime();
         const dateB = new Date(b.date).getTime();
         return dateB - dateA; // Sort descending (most recent first)
@@ -387,6 +436,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         }
       }
 
+      console.log(`🔥 Calculating streak: ${newStreak} days (from ${completedMissions.length} completed missions)`);
+
       // Update streak in database
       const { error } = await profileService.updateProfile({
         streak: newStreak,
@@ -396,10 +447,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
       if (!error) {
         setStreak(newStreak);
-        // Reload user profile to get updated streak
-        if (accessToken) {
-          await fetchUserProfile(accessToken);
+        // Also update the user object to keep it in sync
+        if (user) {
+          setUser({
+            ...user,
+            streak: newStreak,
+          });
         }
+        console.log(`✅ Streak updated to ${newStreak}`);
       } else {
         console.error('Error updating streak:', error);
       }
@@ -575,24 +630,33 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const submitFeedback = async (type: string, message: string) => {
     try {
       if (!user) {
+        console.error('❌ Cannot submit feedback: No user logged in');
         return { error: new Error('User must be logged in to submit feedback') };
       }
       
-      const { error } = await feedbackService.submitFeedback({ 
+      console.log('📝 Submitting feedback:', { type, user_id: user.id, messageLength: message.length });
+      
+      const { data, error } = await feedbackService.submitFeedback({ 
         type, 
         message,
         user_id: user.id,
       });
       
       if (error) {
-        console.error('Error submitting feedback:', error);
+        console.error('❌ Error submitting feedback:', error);
+        console.error('Error details:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
         return { error };
       }
       
-      console.log('✅ Feedback submitted successfully');
+      console.log('✅ Feedback submitted successfully:', data);
       return { error: null };
     } catch (error: any) {
-      console.error('Submit feedback error:', error);
+      console.error('❌ Submit feedback exception:', error);
       return { error };
     }
   };

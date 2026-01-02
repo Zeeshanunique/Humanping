@@ -4,14 +4,12 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useApp } from '../AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useTimeUntilMidnight } from '../../hooks/useTimeUntilMidnight';
 import { useCallback } from 'react';
 
 export default function HomeDashboard() {
   const navigation = useNavigation<any>();
   const { user, streak, missions, loadMissions } = useApp();
   const [menuOpen, setMenuOpen] = useState(false);
-  const timeLeft = useTimeUntilMidnight();
   const lastRefreshTime = useRef(0);
 
   // Refresh missions when screen comes into focus (with debounce)
@@ -33,9 +31,11 @@ export default function HomeDashboard() {
 
   const completedMissions = missions.filter(m => m.completed).length;
   
-  // Get TODAY's mission (completed or not)
+  // Get TODAY's mission - prioritize incomplete missions
   const today = new Date().toISOString().split('T')[0];
-  const todaysMission = missions.find(m => m.date === today);
+  const todaysMissions = missions.filter(m => m.date === today);
+  // Find incomplete mission first, otherwise get any mission for today
+  const todaysMission = todaysMissions.find(m => !m.completed) || todaysMissions[0];
   
   const lastMission = missions.filter(m => m.completed).sort((a, b) => {
     const dateA = a.completed_at ? new Date(a.completed_at).getTime() : (a.date ? new Date(a.date).getTime() : 0);
@@ -113,14 +113,14 @@ export default function HomeDashboard() {
                 <Text style={styles.missionTitle}>
                   {todaysMission 
                     ? (todaysMission.completed 
-                        ? "Mission completed!" 
+                        ? "Ready for another mission!" 
                         : "Today's mission is ready")
                     : "Start your journey"}
                 </Text>
                 <Text style={styles.missionDescription}>
                   {todaysMission 
                     ? (todaysMission.completed
-                        ? 'Great job! Come back tomorrow for your next mission.'
+                        ? 'Great job! You can complete another mission today to continue your streak.'
                         : 'A small action to build connection and confidence.')
                     : 'Begin with your first mission to build confidence.'}
                 </Text>
@@ -139,34 +139,19 @@ export default function HomeDashboard() {
               )}
               
               {todaysMission?.completed && (
-                <View style={styles.completedContainer}>
-                  <View style={styles.completedBadge}>
-                    <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-                    <Text style={styles.completedText}>Mission Completed!</Text>
-                  </View>
-                  
-                  <View style={styles.countdownContainer}>
-                    <Ionicons name="time-outline" size={20} color="rgba(255, 255, 255, 0.9)" />
-                    <Text style={styles.countdownLabel}>Next mission in:</Text>
-                  </View>
-                  
-                  <View style={styles.timerContainer}>
-                    <View style={styles.timerBox}>
-                      <Text style={styles.timerNumber}>{String(timeLeft.hours).padStart(2, '0')}</Text>
-                      <Text style={styles.timerLabel}>hours</Text>
-                    </View>
-                    <Text style={styles.timerSeparator}>:</Text>
-                    <View style={styles.timerBox}>
-                      <Text style={styles.timerNumber}>{String(timeLeft.minutes).padStart(2, '0')}</Text>
-                      <Text style={styles.timerLabel}>mins</Text>
-                    </View>
-                    <Text style={styles.timerSeparator}>:</Text>
-                    <View style={styles.timerBox}>
-                      <Text style={styles.timerNumber}>{String(timeLeft.seconds).padStart(2, '0')}</Text>
-                      <Text style={styles.timerLabel}>secs</Text>
-                    </View>
-                  </View>
-                </View>
+                <TouchableOpacity 
+                  style={styles.startButton}
+                  onPress={() => {
+                    // Force refresh missions and navigate
+                    loadMissions();
+                    setTimeout(() => navigation.navigate('TodaysMission'), 100);
+                  }}
+                >
+                  <Text style={styles.startButtonText}>
+                    View Next Mission
+                  </Text>
+                  <Ionicons name="chevron-forward" size={16} color="#ffffff" />
+                </TouchableOpacity>
               )}
             </View>
           </LinearGradient>
@@ -429,39 +414,12 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 4,
   },
-  countdownLabel: {
+  nextMissionText: {
     color: 'rgba(255, 255, 255, 0.9)',
     fontSize: 14,
     fontWeight: '500',
-  },
-  timerContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  timerBox: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 8,
-    padding: 8,
-    minWidth: 60,
-    alignItems: 'center',
-  },
-  timerNumber: {
-    color: '#ffffff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  timerLabel: {
-    color: 'rgba(255, 255, 255, 0.8)',
-    fontSize: 10,
-    marginTop: 2,
-  },
-  timerSeparator: {
-    color: '#ffffff',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginHorizontal: 4,
+    textAlign: 'center',
+    marginTop: 12,
   },
   encouragementText: {
     marginBottom: 16,

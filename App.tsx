@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { AppProvider } from './src/components/AppContext';
-import { ThemeProvider } from './src/contexts/ThemeContext';
+import { ThemeProvider, useTheme } from './src/contexts/ThemeContext';
 import { StatusBar } from 'expo-status-bar';
 import { Ionicons } from '@expo/vector-icons';
 import { View, ActivityIndicator, Text } from 'react-native';
@@ -17,6 +17,7 @@ import Intro4Screen from './src/components/screens/Intro4Screen';
 import SignUpScreen from './src/components/screens/SignUpScreen';
 import LoginScreen from './src/components/screens/LoginScreen';
 import ForgotPasswordScreen from './src/components/screens/ForgotPasswordScreen';
+import AppWrapper from './src/components/AppWrapper';
 import HomeDashboard from './src/components/screens/HomeDashboard';
 import ProfileScreen from './src/components/screens/ProfileScreen';
 import EditProfileScreen from './src/components/screens/EditProfileScreen';
@@ -96,8 +97,8 @@ export default function App() {
   return (
     <ThemeProvider>
       <AppProvider>
-        <StatusBar style="auto" />
-        <NavigationContainer>
+        <AppWrapper>
+          <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
             headerShown: false,
@@ -131,6 +132,7 @@ export default function App() {
           <Stack.Screen name="MissionsCompleted" component={MissionsCompletedScreen} />
         </Stack.Navigator>
         </NavigationContainer>
+        </AppWrapper>
       </AppProvider>
     </ThemeProvider>
   );

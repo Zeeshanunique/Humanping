@@ -6,15 +6,15 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default function TaskCompletionScreen() {
   const navigation = useNavigation<any>();
-  const { currentMission, updateMission, incrementStreak } = useApp();
+  const { currentMission, updateMission } = useApp();
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     if (currentMission) {
-      updateMission(currentMission.id, {
+      await updateMission(currentMission.id, {
         completed: true,
         date: new Date().toISOString().split('T')[0]
       });
-      incrementStreak();
+      // Streak will be updated automatically in updateMission
     }
     Alert.alert('Success', 'Mission completed! 🎉');
     navigation.navigate('HomeTab');

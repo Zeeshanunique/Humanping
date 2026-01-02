@@ -18,15 +18,22 @@ export default function FeedbackScreen() {
       return;
     }
 
+    console.log('📝 FeedbackScreen: Submitting feedback...');
     setLoading(true);
     const { error } = await submitFeedback(category, feedback);
     setLoading(false);
 
     if (error) {
-      Alert.alert('Error', 'Failed to submit feedback. Please try again.');
+      console.error('❌ FeedbackScreen: Submission failed', error);
+      Alert.alert(
+        'Error', 
+        error.message || 'Failed to submit feedback. Please try again.',
+        [{ text: 'OK' }]
+      );
       return;
     }
 
+    console.log('✅ FeedbackScreen: Submission successful');
     Alert.alert('Success', 'Thank you for your feedback!');
     setFeedback('');
     setTimeout(() => navigation.goBack(), 1000);

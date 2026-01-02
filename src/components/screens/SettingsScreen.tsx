@@ -107,13 +107,22 @@ export default function SettingsScreen() {
                   <View style={styles.settingText}>
                     <Text style={styles.settingTitle}>Dark Mode</Text>
                     <Text style={styles.settingSubtitle}>
-                      {theme === 'system' ? 'System default' : theme === 'dark' ? 'Dark' : 'Light'}
+                      {theme === 'system' ? 'System default' : theme === 'dark' ? 'Enabled' : 'Disabled'}
                     </Text>
                   </View>
                 </View>
                 <Switch 
                   value={darkMode} 
-                  onValueChange={(value) => setTheme(value ? 'dark' : 'light')} 
+                  onValueChange={(value) => {
+                    setTheme(value ? 'dark' : 'light');
+                    Alert.alert(
+                      'Dark Mode', 
+                      value 
+                        ? 'Dark mode is now enabled! Full dark theme coming soon.' 
+                        : 'Dark mode is now disabled.',
+                      [{ text: 'OK' }]
+                    );
+                  }} 
                 />
               </View>
 

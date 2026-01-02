@@ -1,18 +1,47 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useApp } from '../AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useTimeUntilMidnight } from '../../hooks/useTimeUntilMidnight';
+import { useState, useCallback } from 'react';
 
 export default function TodaysMissionScreen() {
   const navigation = useNavigation<any>();
-  const { missions, setCurrentMission } = useApp();
-  const timeLeft = useTimeUntilMidnight();
+  const { missions, setCurrentMission, loadMissions } = useApp();
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Get TODAY's mission (completed or not)
+  // Reload missions when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      const refreshMissions = async () => {
+        console.log('🔄 TodaysMissionScreen focused, loading missions...');
+        setIsLoading(true);
+        await loadMissions();
+        setIsLoading(false);
+      };
+      refreshMissions();
+    }, [])
+  );
+
+  // Get TODAY's mission - prioritize incomplete missions
   const today = new Date().toISOString().split('T')[0];
-  const todaysMission = missions.find(m => m.date === today);
+  const todaysMissions = missions.filter(m => m.date === today);
+  
+  console.log(`📋 TodaysMissionScreen - Total missions today: ${todaysMissions.length}`);
+  console.log(`📋 Missions for ${today}:`, todaysMissions.map(m => ({ 
+    id: m.id, 
+    title: m.title, 
+    completed: m.completed 
+  })));
+  
+  // Find incomplete mission first, otherwise get any mission for today
+  const todaysMission = todaysMissions.find(m => !m.completed) || todaysMissions[0];
+  
+  console.log(`📋 Selected mission:`, todaysMission ? {
+    id: todaysMission.id,
+    title: todaysMission.title,
+    completed: todaysMission.completed
+  } : 'none');
 
   const handleStartMission = () => {
     if (todaysMission && !todaysMission.completed) {
@@ -31,6 +60,32 @@ export default function TodaysMissionScreen() {
         return { bg: '#fee2e2', text: '#991b1b' };
     }
   };
+
+  // Show loading state while missions are being fetched
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient
+          colors={['#eff6ff', '#f3e8ff']}
+          style={styles.header}
+        >
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Ionicons name="arrow-back" size={24} color="#111827" />
+          </TouchableOpacity>
+        </LinearGradient>
+        <View style={[styles.container, { justifyContent: 'center', alignItems: 'center', padding: 20 }]}>
+          <ActivityIndicator size="large" color="#2563eb" />
+          <Text style={[styles.subtitle, { marginTop: 20, textAlign: 'center' }]}>
+            Loading your mission...
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   // Show loading/empty state if no mission
   if (!todaysMission) {
@@ -77,35 +132,28 @@ export default function TodaysMissionScreen() {
           <Ionicons name="checkmark-circle" size={100} color="#10b981" />
           <Text style={[styles.title, { marginTop: 24, textAlign: 'center' }]}>Mission Completed!</Text>
           <Text style={[styles.subtitle, { textAlign: 'center', marginTop: 12 }]}>
-            Great job! Come back tomorrow for your next mission.
+            Great job! A new mission should appear shortly.
           </Text>
           
-          <View style={styles.countdownCard}>
-            <View style={styles.countdownHeader}>
-              <Ionicons name="time-outline" size={24} color="#2563eb" />
-              <Text style={styles.countdownTitle}>Next Mission In:</Text>
+          <TouchableOpacity 
+            style={[styles.startButton, { marginTop: 20, backgroundColor: '#2563eb' }]}
+            onPress={async () => {
+              console.log('🔄 Manual refresh triggered');
+              await loadMissions();
+              setTimeout(() => {
+                const refreshedMissions = missions.filter(m => m.date === today);
+                console.log(`📋 After refresh: ${refreshedMissions.length} missions for today`);
+              }, 500);
+            }}
+          >
+            <View style={[styles.startButtonGradient, { backgroundColor: '#2563eb' }]}>
+              <Ionicons name="refresh" size={20} color="#ffffff" style={{ marginRight: 8 }} />
+              <Text style={styles.startButtonText}>Check for New Mission</Text>
             </View>
-            
-            <View style={styles.timerDisplay}>
-              <View style={styles.timeBox}>
-                <Text style={styles.timeNumber}>{String(timeLeft.hours).padStart(2, '0')}</Text>
-                <Text style={styles.timeLabel}>hours</Text>
-              </View>
-              <Text style={styles.timeSeparator}>:</Text>
-              <View style={styles.timeBox}>
-                <Text style={styles.timeNumber}>{String(timeLeft.minutes).padStart(2, '0')}</Text>
-                <Text style={styles.timeLabel}>minutes</Text>
-              </View>
-              <Text style={styles.timeSeparator}>:</Text>
-              <View style={styles.timeBox}>
-                <Text style={styles.timeNumber}>{String(timeLeft.seconds).padStart(2, '0')}</Text>
-                <Text style={styles.timeLabel}>seconds</Text>
-              </View>
-            </View>
-          </View>
+          </TouchableOpacity>
           
           <TouchableOpacity 
-            style={[styles.startButton, { marginTop: 30 }]}
+            style={[styles.startButton, { marginTop: 12 }]}
             onPress={() => navigation.navigate('HomeTab')}
           >
             <LinearGradient
