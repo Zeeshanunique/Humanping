@@ -17,7 +17,10 @@ import Intro4Screen from './src/components/screens/Intro4Screen';
 import SignUpScreen from './src/components/screens/SignUpScreen';
 import LoginScreen from './src/components/screens/LoginScreen';
 import ForgotPasswordScreen from './src/components/screens/ForgotPasswordScreen';
-import AppWrapper from './src/components/AppWrapper';
+import SubscriptionScreen from './src/components/screens/SubscriptionScreen';
+import PaymentMethodScreen from './src/components/screens/PaymentMethodScreen';
+import PaymentReviewScreen from './src/components/screens/PaymentReviewScreen';
+import PaymentSuccessScreen from './src/components/screens/PaymentSuccessScreen';
 import HomeDashboard from './src/components/screens/HomeDashboard';
 import ProfileScreen from './src/components/screens/ProfileScreen';
 import EditProfileScreen from './src/components/screens/EditProfileScreen';
@@ -97,42 +100,44 @@ export default function App() {
   return (
     <ThemeProvider>
       <AppProvider>
-        <AppWrapper>
-          <NavigationContainer>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-            animation: 'slide_from_right',
-          }}
-        >
-          <Stack.Screen name="Splash" component={SplashScreen} />
-          <Stack.Screen name="Intro1" component={Intro1Screen} />
-          <Stack.Screen name="Intro2" component={Intro2Screen} />
-          <Stack.Screen name="Intro3" component={Intro3Screen} />
-          <Stack.Screen name="Intro4" component={Intro4Screen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="Main" component={MainTabs} />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-          <Stack.Screen name="Feedback" component={FeedbackScreen} />
-          <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
-          <Stack.Screen name="Notifications" component={NotificationsScreen} />
-          <Stack.Screen name="Streaks" component={StreaksScreen} />
-          <Stack.Screen name="TodaysMission" component={TodaysMissionScreen} />
-          <Stack.Screen name="TaskInstruction" component={TaskInstructionScreen} />
-          <Stack.Screen name="UserFeeling" component={UserFeelingScreen} />
-          <Stack.Screen name="TaskSelection" component={TaskSelectionScreen} />
-          <Stack.Screen name="Suggestion" component={SuggestionScreen} />
-          <Stack.Screen name="TaskStatus" component={TaskStatusScreen} />
-          <Stack.Screen name="PostTaskFeeling" component={PostTaskFeelingScreen} />
-          <Stack.Screen name="TaskCompletion" component={TaskCompletionScreen} />
-          <Stack.Screen name="WeeklyReview" component={WeeklyReviewScreen} />
-          <Stack.Screen name="MissionsCompleted" component={MissionsCompletedScreen} />
-        </Stack.Navigator>
+        <NavigationContainer>
+          <Stack.Navigator
+            screenOptions={{
+              headerShown: false,
+              animation: 'slide_from_right',
+            }}
+          >
+            <Stack.Screen name="Splash" component={SplashScreen} />
+            <Stack.Screen name="Intro1" component={Intro1Screen} />
+            <Stack.Screen name="Intro2" component={Intro2Screen} />
+            <Stack.Screen name="Intro3" component={Intro3Screen} />
+            <Stack.Screen name="Intro4" component={Intro4Screen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+            <Stack.Screen name="Subscription" component={SubscriptionScreen} />
+            <Stack.Screen name="PaymentMethod" component={PaymentMethodScreen} />
+            <Stack.Screen name="PaymentReview" component={PaymentReviewScreen} />
+            <Stack.Screen name="PaymentSuccess" component={PaymentSuccessScreen} />
+            <Stack.Screen name="Main" component={MainTabs} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+            <Stack.Screen name="Feedback" component={FeedbackScreen} />
+            <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} />
+            <Stack.Screen name="Streaks" component={StreaksScreen} />
+            <Stack.Screen name="TodaysMission" component={TodaysMissionScreen} />
+            <Stack.Screen name="TaskInstruction" component={TaskInstructionScreen} />
+            <Stack.Screen name="UserFeeling" component={UserFeelingScreen} />
+            <Stack.Screen name="TaskSelection" component={TaskSelectionScreen} />
+            <Stack.Screen name="Suggestion" component={SuggestionScreen} />
+            <Stack.Screen name="TaskStatus" component={TaskStatusScreen} />
+            <Stack.Screen name="PostTaskFeeling" component={PostTaskFeelingScreen} />
+            <Stack.Screen name="TaskCompletion" component={TaskCompletionScreen} />
+            <Stack.Screen name="WeeklyReview" component={WeeklyReviewScreen} />
+            <Stack.Screen name="MissionsCompleted" component={MissionsCompletedScreen} />
+          </Stack.Navigator>
         </NavigationContainer>
-        </AppWrapper>
       </AppProvider>
     </ThemeProvider>
   );

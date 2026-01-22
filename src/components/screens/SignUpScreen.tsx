@@ -33,7 +33,7 @@ export default function SignUpScreen() {
     }
 
     Alert.alert('Success', 'Account created successfully!');
-    navigation.navigate('Main');
+    navigation.navigate('Subscription');
   };
 
   return (

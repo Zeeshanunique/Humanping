@@ -131,7 +131,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // Fetch user profile via Edge Function (Constlabourr style)
+  // Fetch user profile directly from Supabase (simplified, no Edge Function)
   const fetchUserProfile = async (token: string) => {
     // Prevent duplicate profile fetches
     if (isLoadingProfileRef.current) {
@@ -143,46 +143,63 @@ export function AppProvider({ children }: { children: ReactNode }) {
     console.log('📥 Fetching user profile...');
 
     try {
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/humanping-auth/profile`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch profile');
-      }
-
-      const data = await response.json();
-      console.log('📦 Profile data received');
+      // Get user from auth
+      const { data: { user: authUser }, error: userError } = await supabase.auth.getUser(token);
       
-      if (data.profile) {
+      if (userError || !authUser) {
+        throw new Error('Failed to get auth user: ' + (userError?.message || 'Unknown error'));
+      }
+      
+      console.log('✅ Auth user found:', authUser.id);
+      
+      // Fetch profile directly from Supabase
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', authUser.id)
+        .single();
+      
+      if (profileError) {
+        console.error('❌ Profile fetch failed:', profileError);
+        throw profileError;
+      }
+      
+      if (profileData) {
+        console.log('✅ Profile data fetched successfully');
         const userProfile = {
-          id: data.profile.id,
-          name: data.profile.name || '',
-          email: data.profile.email || '',
-          streak: data.profile.streak || 0,
-          totalMissions: data.profile.total_missions || 0,
-          joinDate: data.profile.created_at?.split('T')[0] || new Date().toISOString().split('T')[0]
+          id: profileData.id,
+          name: profileData.name || '',
+          email: profileData.email || authUser.email || '',
+          streak: profileData.streak || 0,
+          totalMissions: profileData.total_missions || 0,
+          joinDate: profileData.created_at?.split('T')[0] || new Date().toISOString().split('T')[0]
         };
         
         setUser(userProfile);
-        setStreak(userProfile.streak); // Set streak from profile
+        setStreak(userProfile.streak);
         console.log('✅ User state set with streak:', userProfile.streak);
         
-        // Generate daily mission first (only on login)
-        await generateDailyMission(token);
-        console.log('✅ Daily mission generation complete');
+        // Get fresh session for Edge Function calls
+        const { data: { session: freshSession } } = await supabase.auth.getSession();
+        const freshToken = freshSession?.access_token;
         
-        // Then load all missions
+        // Generate daily mission
+        if (freshToken) {
+          await generateDailyMission(freshToken);
+          console.log('✅ Daily mission check complete');
+        } else {
+          console.warn('⚠️ No valid token available, skipping daily mission generation');
+        }
+        
+        // Load all missions
         await loadMissionsForUser(userProfile.id);
         console.log('✅ Missions loaded');
+      } else {
+        throw new Error('No profile data found for user');
       }
     } catch (error: any) {
-      console.error('Error fetching user profile:', error);
+      console.error('❌ Error fetching user profile:', error.message || error);
+      Alert.alert('Error', 'Failed to load your profile. Please try logging in again.');
     } finally {
       console.log('✅ Releasing profile lock');
       isLoadingProfileRef.current = false;
@@ -253,7 +270,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await createFirstMissionForUser(user.id);
   };
 
-  // Generate daily mission (calls Edge Function)
+  // Generate daily mission locally (no Edge Function needed)
   const generateDailyMission = async (token: string, testMode: boolean = false) => {
     // Prevent duplicate calls using ref (immediate, not async like state)
     if (isGeneratingMissionRef.current) {
@@ -265,41 +282,121 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setIsGeneratingMission(true);
     
     try {
-      console.log(testMode ? '🧪 TEST: Generating test mission...' : '🎯 Generating daily mission...');
-      const response = await fetch(
-        `https://${projectId}.supabase.co/functions/v1/generate-daily-mission`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ testMode }),
-        }
-      );
-
-      console.log('📥 Response received:', { status: response.status, ok: response.ok });
-
-      const data = await response.json();
-      console.log('📦 Response data:', data);
+      console.log(testMode ? '🧪 TEST: Generating test mission...' : '🎯 Checking daily mission...');
       
-      if (response.ok) {
-        console.log('✅ Daily mission check:', data.message);
-        return { success: true, data, message: data.message };
-      } else {
-        console.error('❌ Error generating daily mission:', {
-          status: response.status,
-          error: data.error,
-          fullResponse: data,
-        });
-        return { success: false, error: data.error };
+      if (!user) {
+        console.log('⚠️ No user found, skipping mission generation');
+        return { success: false, error: 'No user' };
       }
+
+      const today = testMode 
+        ? new Date(Date.now() + 86400000).toISOString().split('T')[0] // Tomorrow for testing
+        : new Date().toISOString().split('T')[0];
+
+      console.log(`📅 Checking for incomplete mission on date: ${today}`);
+
+      // Check if user already has an INCOMPLETE mission for today
+      const { data: incompleteMissions, error: checkError } = await supabase
+        .from('missions')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('date', today)
+        .eq('completed', false)
+        .limit(1);
+
+      if (checkError) {
+        console.error('❌ Error checking for existing mission:', checkError);
+        return { success: false, error: checkError.message };
+      }
+
+      // If there's an incomplete mission, we're done
+      if (incompleteMissions && incompleteMissions.length > 0) {
+        console.log('✅ Incomplete mission already exists for today');
+        return { 
+          success: true, 
+          message: 'Incomplete mission for today already exists',
+          mission: incompleteMissions[0]
+        };
+      }
+
+      // All missions for today are completed, create a new one
+      console.log('✨ No incomplete mission for today, creating new one...');
+
+      // Get user's completed missions count to determine difficulty
+      const { data: completedMissions } = await supabase
+        .from('missions')
+        .select('completed')
+        .eq('user_id', user.id)
+        .eq('completed', true);
+
+      const completedCount = completedMissions?.length || 0;
+      console.log(`📊 User has completed ${completedCount} missions`);
+
+      // Determine difficulty based on progress
+      let difficulty = 'easy';
+      if (completedCount >= 20) {
+        difficulty = 'hard';
+      } else if (completedCount >= 7) {
+        difficulty = 'medium';
+      }
+
+      console.log(`🎯 Selected difficulty: ${difficulty}`);
+
+      // Get random mission template
+      const { data: templates } = await supabase
+        .from('mission_templates')
+        .select('*')
+        .eq('difficulty', difficulty);
+
+      let template;
+      if (!templates || templates.length === 0) {
+        console.log('⚠️ No templates found for difficulty, using any available');
+        const { data: fallbackTemplates } = await supabase
+          .from('mission_templates')
+          .select('*');
+        
+        if (!fallbackTemplates || fallbackTemplates.length === 0) {
+          console.error('❌ No mission templates available');
+          return { success: false, error: 'No mission templates available' };
+        }
+        
+        template = fallbackTemplates[Math.floor(Math.random() * fallbackTemplates.length)];
+      } else {
+        template = templates[Math.floor(Math.random() * templates.length)];
+      }
+
+      console.log(`✨ Creating mission from template: ${template.title}`);
+
+      // Create mission from template
+      const { data: newMission, error: createError } = await supabase
+        .from('missions')
+        .insert({
+          user_id: user.id,
+          title: template.title,
+          description: template.description,
+          category: template.category,
+          difficulty: template.difficulty,
+          location: template.location,
+          completed: false,
+          date: today,
+        })
+        .select()
+        .single();
+
+      if (createError) {
+        console.error('❌ Error creating mission:', createError);
+        return { success: false, error: createError.message };
+      }
+
+      console.log('✅ New mission created successfully');
+      return { 
+        success: true, 
+        message: 'New mission created for today',
+        mission: newMission
+      };
+
     } catch (error: any) {
       console.error('❌ Exception generating daily mission:', error);
-      console.error('Error details:', {
-        message: error?.message,
-        stack: error?.stack,
-      });
       return { success: false, error: error.message };
     } finally {
       isGeneratingMissionRef.current = false;

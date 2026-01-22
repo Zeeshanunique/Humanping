@@ -27,7 +27,7 @@ export default function LoginScreen() {
     }
 
     Alert.alert('Success', 'Welcome back!');
-    navigation.navigate('Main');
+    navigation.navigate('Subscription');
   };
 
   return (
